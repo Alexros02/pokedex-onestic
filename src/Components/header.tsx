@@ -1,18 +1,20 @@
 import logoPokedex from '../assets/logopokedex.png';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Menu, X, Home, Heart } from 'lucide-react';
+import { Menu, X, Home, Heart, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const Header = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isDarkMode, toggleTheme } = useTheme();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <header className="bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg">
+    <header className="bg-gradient-to-r from-blue-600 to-purple-600 dark:to-purple-800 shadow-lg">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="flex justify-between items-center py-2 sm:py-3 lg:py-4">
           {/* Logo y título */}
@@ -50,6 +52,16 @@ const Header = () => {
               <Heart className="w-4 h-4" />
               <span>Favoritos</span>
             </button>
+
+            {/* Switch de tema */}
+            <button
+              onClick={toggleTheme}
+              className="flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
+              aria-label={isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+            >
+              {isDarkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+              <span className="hidden md:inline">{isDarkMode ? 'Claro' : 'Oscuro'}</span>
+            </button>
           </nav>
         </div>
 
@@ -77,6 +89,19 @@ const Header = () => {
               >
                 <Heart className="w-4 h-4" />
                 <span>Favoritos</span>
+              </button>
+
+              {/* Switch de tema en menú móvil */}
+              <button
+                onClick={() => {
+                  toggleTheme();
+                  setIsMenuOpen(false);
+                }}
+                className="flex items-center space-x-3 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-left py-2 px-3 rounded hover:bg-blue-700"
+                aria-label={isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+              >
+                {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                <span>{isDarkMode ? 'Modo Claro' : 'Modo Oscuro'}</span>
               </button>
             </nav>
           </div>
