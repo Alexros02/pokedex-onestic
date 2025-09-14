@@ -1,6 +1,7 @@
 import logoPokedex from '../assets/logopokedex.png';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { Menu, X, Home, Heart } from 'lucide-react';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -29,39 +30,25 @@ const Header = () => {
             className="sm:hidden text-white hover:text-yellow-300 transition-colors duration-200 p-2"
             aria-label="Abrir menú"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
 
           {/* Navegación horizontal para md y lg */}
           <nav className="hidden sm:flex space-x-4 md:space-x-6 lg:space-x-8">
             <button
               onClick={() => navigate('/')}
-              className="text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
+              className="flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
             >
-              Inicio
+              <Home className="w-4 h-4" />
+              <span>Inicio</span>
             </button>
 
             <button
               onClick={() => navigate('/favorite')}
-              className="text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
+              className="flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
             >
-              Favoritos
+              <Heart className="w-4 h-4" />
+              <span>Favoritos</span>
             </button>
           </nav>
         </div>
@@ -75,9 +62,10 @@ const Header = () => {
                   navigate('/');
                   setIsMenuOpen(false);
                 }}
-                className="text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-left py-2 px-3 rounded hover:bg-blue-700"
+                className="flex items-center space-x-3 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-left py-2 px-3 rounded hover:bg-blue-700"
               >
-                Inicio
+                <Home className="w-4 h-4" />
+                <span>Inicio</span>
               </button>
 
               <button
@@ -85,9 +73,10 @@ const Header = () => {
                   navigate('/favorite');
                   setIsMenuOpen(false);
                 }}
-                className="text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-left py-2 px-3 rounded hover:bg-blue-700"
+                className="flex items-center space-x-3 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-left py-2 px-3 rounded hover:bg-blue-700"
               >
-                Favoritos
+                <Heart className="w-4 h-4" />
+                <span>Favoritos</span>
               </button>
             </nav>
           </div>
