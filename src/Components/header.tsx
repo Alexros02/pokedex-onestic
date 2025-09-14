@@ -1,7 +1,8 @@
-import React from 'react';
 import logoPokedex from '../assets/logopokedex.png';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <header className="bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,19 +15,19 @@ const Header = () => {
 
           {/* Navegación */}
           <nav className="hidden md:flex space-x-8">
-            <a
-              href="#inicio"
+            <button
+              onClick={() => navigate('/')}
               className="text-white hover:text-yellow-300 transition-colors duration-200 font-medium"
             >
               Inicio
-            </a>
-            
-            <a
-              href="#favoritos"
+            </button>
+
+            <button
+              onClick={() => navigate('/favorite')}
               className="text-white hover:text-yellow-300 transition-colors duration-200 font-medium"
             >
               Favoritos
-            </a>
+            </button>
           </nav>
         </div>
       </div>
