@@ -8,7 +8,7 @@ const MainLayout = () => {
   return (
     <div className={`flex flex-col min-h-screen ${isDarkMode ? 'dark' : ''}`}>
       <Header />
-      <main className="flex-1 p-4">
+      <main className="flex-1 p-4 dark:bg-gray-900 dark:text-white">
         <Outlet /> {/* Renderiza las páginas */}
       </main>
       {/*<footer/>*/}
