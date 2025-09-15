@@ -5,8 +5,18 @@ import Card from '../Components/card';
 import CardList from '../Components/card-list';
 
 
+
+
+
 const TestComponentsPage = () => {
   const { isDarkMode, toggleTheme } = useTheme();
+  const pokemon = {
+    id: 1,
+    name: 'Pikachu',
+    type: 'Eléctrico',
+    weight: '6.0 kg',
+    description: 'Pokémon ágil que acumula electricidad en las mejillas. Suele vivir en bosques y zonas con abundante energía.',
+  };
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
@@ -103,11 +113,11 @@ const TestComponentsPage = () => {
         </div>
 
         {/* Card estilo carta Pokémon (proporción vertical y tamaño fijo, mantiene estética glass) */}
-        <Card />
+        <Card key={pokemon.id} pokemon={pokemon} />
     
 
         {/* Card estilo lista (horizontal) */}
-        <CardList />
+        <CardList key={pokemon.id} pokemon={pokemon} />
       
 
       {/* Estados y mensajes */}
