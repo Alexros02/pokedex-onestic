@@ -1,6 +1,9 @@
 import { useTheme } from '../contexts/ThemeContext';
 import pikachuImg from '../assets/pikachu.png';
-import { Star, ChevronRight } from 'lucide-react';
+
+import Card from '../Components/card';
+import CardList from '../Components/card-list';
+
 
 const TestComponentsPage = () => {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -17,25 +20,7 @@ const TestComponentsPage = () => {
         </button>
       </header>
 
-      {/* Cards y contenedores */}
-      <section>
-        <h2 className="text-xl font-semibold mb-4">Cards</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="rounded-lg border border-gray-200 p-4 shadow-sm dark:border-gray-700">
-            <h3 className="font-medium mb-2">Card simple</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              Contenido de ejemplo para validar estilos.
-            </p>
-          </div>
-          <div className="rounded-lg p-4 shadow-md bg-white dark:bg-gray-800">
-            <h3 className="font-medium mb-2">Card elevada</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">Otra variante con sombra.</p>
-          </div>
-          <div className="rounded-lg p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700">
-            <h3 className="font-medium mb-2">Card con gradiente</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">Ideal para destacar.</p>
-          </div>
-        </div>
+      
 
         {/* Card estilo glass de Apple */}
         <div className="mt-6 relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 dark:bg-white/5 backdrop-blur-xl shadow-lg">
@@ -118,101 +103,12 @@ const TestComponentsPage = () => {
         </div>
 
         {/* Card estilo carta Pokémon (proporción vertical y tamaño fijo, mantiene estética glass) */}
-        <div className="mt-6 flex justify-center">
-          <div className="relative w-72 h-[23rem] sm:w-80 sm:h-[23rem] rounded-2xl border border-white/25 bg-white/10 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden">
-            {/* halos decorativos */}
-            <div className="pointer-events-none absolute -top-24 -left-16 h-52 w-52 rounded-full bg-gradient-to-br from-yellow-300/40 to-amber-300/30 blur-3xl"></div>
-            <div className="pointer-events-none absolute -bottom-24 -right-10 h-64 w-64 rounded-full bg-gradient-to-tr from-blue-300/30 to-purple-300/30 blur-3xl"></div>
-
-            {/* cabecera */}
-            <div className="relative z-10 px-4 pt-4 pb-2 flex items-center justify-between">
-              <h3 className="text-xl font-semibold tracking-tight">Pikachu</h3>
-              <span className="inline-flex items-center rounded-full bg-yellow-400/20 text-yellow-900 dark:text-yellow-200 px-2.5 py-0.5 text-xs font-medium border border-yellow-300/30 backdrop-blur">
-                Eléctrico
-              </span>
-            </div>
-
-            {/* área de imagen */}
-            <div className="relative z-10 mx-4 mt-1 rounded-xl border border-white/20 bg-white/10 p-3 h-40 sm:h-44 flex items-center justify-center">
-              <img
-                src={pikachuImg}
-                alt="Pikachu"
-                className="max-h-full object-contain drop-shadow-[0_8px_24px_rgba(250,204,21,0.55)]"
-                loading="lazy"
-              />
-            </div>
-
-            {/* información */}
-            <div className="relative z-10 px-4 pt-3">
-              <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">Peso: 6.0 kg</div>
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                Descarga energía de sus mejillas cuando se emociona. Su cola funciona como
-                pararrayos.
-              </p>
-            </div>
-
-            {/* pie con mini chips */}
-            <div className="relative z-10 px-4 pb-4 pt-3 flex items-center gap-2">
-              <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] text-gray-800 dark:text-gray-200">
-                #025
-              </span>
-            </div>
-
-            {/* botón favorito */}
-            <button
-              type="button"
-              aria-label="Añadir a favoritos"
-              className="absolute bottom-3 right-3 z-20 inline-flex items-center justify-center h-10 w-10 rounded-full border border-white/30 bg-white/20 backdrop-blur text-yellow-600 dark:text-yellow-300 hover:bg-white/30 transition shadow-md"
-            >
-              <Star className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
+        <Card />
+    
 
         {/* Card estilo lista (horizontal) */}
-        <div className="mt-6 relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 dark:bg-white/5 backdrop-blur-xl shadow-md">
-          <div className="relative z-10 flex items-center gap-4 p-4 sm:p-5">
-            <div className="h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 rounded-xl border border-white/20 bg-white/10 flex items-center justify-center">
-              <img
-                src={pikachuImg}
-                alt="Pikachu"
-                className="max-h-full max-w-full object-contain drop-shadow-[0_6px_16px_rgba(250,204,21,0.5)]"
-                loading="lazy"
-              />
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <h3 className="text-md sm:text-lg font-semibold truncate">Pikachu</h3>
-                <span className="inline-flex items-center rounded-full bg-yellow-400/20 text-yellow-900 dark:text-yellow-200 px-2 py-0.5 text-[11px] font-medium border border-yellow-300/30 backdrop-blur">
-                  Eléctrico
-                </span>
-              </div>
-              <div className="text-xs text-gray-700 dark:text-gray-300 mt-1">Peso: 6.0 kg</div>
-              {/* descripcion que solo se muestra en tamaños de responsive lg y xl */}
-              <p className="text-lg text-gray-700 dark:text-gray-300 mt-1 line-clamp-2 hidden sm:block">
-                Pokémon ágil que acumula electricidad en las mejillas. Suele vivir en bosques y
-                zonas con abundante energía.
-              </p>
-            </div>
-            <button
-              type="button"
-              aria-label="Añadir a favoritos"
-              className="inline-flex items-center justify-center h-10 w-10 rounded-full border border-white/30 bg-white/20 backdrop-blur text-yellow-600 dark:text-yellow-300 hover:bg-white/30 transition shadow-md"
-            >
-              <Star className="h-5 w-5" />
-            </button>
-
-            <button
-              type="button"
-              aria-label="Ver detalles"
-              className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 hover:bg-white/30 backdrop-blur transition text-gray-700 dark:text-gray-200"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-      </section>
+        <CardList />
+      
 
       {/* Estados y mensajes */}
       <section>
