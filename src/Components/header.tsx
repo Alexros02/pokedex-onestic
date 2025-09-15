@@ -57,7 +57,7 @@ const Header = () => {
             <button
               onClick={toggleTheme}
               className="flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
-              aria-label={isDarkMode ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
+              aria-label={isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
             >
               {isDarkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
               <span className="hidden md:inline">{isDarkMode ? 'Oscuro' : 'Claro'}</span>
@@ -98,7 +98,7 @@ const Header = () => {
                   setIsMenuOpen(false);
                 }}
                 className="flex items-center space-x-3 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-left py-2 px-3 rounded hover:bg-blue-700"
-                aria-label={isDarkMode ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
+                aria-label={isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
               >
                 {isDarkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                 <span>{isDarkMode ? 'Modo Oscuro' : 'Modo Claro'}</span>
