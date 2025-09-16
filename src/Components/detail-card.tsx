@@ -1,43 +1,52 @@
 import { getPokemonArtworkUrl } from '../services/pokedex-service';
 import { Star } from 'lucide-react';
+import type { PokemonFullDetails } from '../types';
+import { generateAccentColors } from '../utils/color-utils';
 
-interface PokemonDetail {
-  id: number;
-  name: string;
-  types: string[];
-  weight: string;
-  height: string;
-  abilities: string[];
-  stats: { label: string; value: number }[];
-  description: string;
-}
-
-const mockPokemon: PokemonDetail = {
-  id: 25,
-  name: 'Pikachu',
-  types: ['Eléctrico'],
-  weight: '6.0 kg',
-  height: '0.4 m',
-  abilities: ['Electricidad Estática', 'Pararrayos'],
-  stats: [
-    { label: 'PS', value: 35 },
-    { label: 'Ataque', value: 55 },
-    { label: 'Defensa', value: 40 },
-    { label: 'Atq. Esp.', value: 50 },
-    { label: 'Def. Esp.', value: 50 },
-    { label: 'Velocidad', value: 90 },
-  ],
-  description:
-    'Pikachu almacena electricidad en sus mejillas. Si se siente amenazado, libera descargas eléctricas. Es un Pokémon ágil y sociable.',
+type DetailCardProps = {
+  pokemon: PokemonFullDetails;
 };
 
-const DetailCard = () => {
-  const p = mockPokemon;
+const DetailCard = ({ pokemon }: DetailCardProps) => {
+  const accentColors = generateAccentColors(pokemon.typeColor);
+  const p = {
+    id: pokemon.id,
+    name: pokemon.name,
+    types: pokemon.types,
+    weightKg: (pokemon.weight / 10).toFixed(1) + ' kg',
+    heightM: (pokemon.height / 10).toFixed(1) + ' m',
+    abilities: pokemon.abilities,
+    statsLabeled: [
+      { label: 'PS', value: pokemon.stats.hp ?? 0 },
+      { label: 'Ataque', value: pokemon.stats.attack ?? 0 },
+      { label: 'Defensa', value: pokemon.stats.defense ?? 0 },
+      { label: 'Atq. Esp.', value: pokemon.stats.specialAttack ?? 0 },
+      { label: 'Def. Esp.', value: pokemon.stats.specialDefense ?? 0 },
+      { label: 'Velocidad', value: pokemon.stats.speed ?? 0 },
+    ],
+    description: pokemon.description,
+  };
   return (
     <div className="relative overflow-hidden rounded-3xl border border-white/25 bg-white/10 dark:bg-white/5 backdrop-blur-xl shadow-xl">
       {/* halos decorativos */}
-      <div className="pointer-events-none absolute -top-24 -left-16 h-56 w-56 rounded-full bg-gradient-to-br from-yellow-300/40 to-amber-300/30 blur-3xl"></div>
-      <div className="pointer-events-none absolute -bottom-28 -right-10 h-72 w-72 rounded-full bg-gradient-to-tr from-blue-300/30 to-purple-300/30 blur-3xl"></div>
+      <div
+        className="pointer-events-none absolute -top-24 -left-16 h-56 w-56 rounded-full blur-3xl"
+        style={{
+          backgroundImage:
+            accentColors.accentHaloStrong && accentColors.accentHaloSoft
+              ? `linear-gradient(to bottom right, ${accentColors.accentHaloStrong}, ${accentColors.accentHaloSoft})`
+              : undefined,
+        }}
+      ></div>
+      <div
+        className="pointer-events-none absolute -bottom-28 -right-10 h-72 w-72 rounded-full blur-3xl"
+        style={{
+          backgroundImage:
+            accentColors.accentHaloAltStrong && accentColors.accentHaloAltSoft
+              ? `linear-gradient(to top right, ${accentColors.accentHaloAltStrong}, ${accentColors.accentHaloAltSoft})`
+              : undefined,
+        }}
+      ></div>
 
       <div className="relative z-10 p-5 sm:p-8">
         {/* Cabecera */}
@@ -48,7 +57,12 @@ const DetailCard = () => {
               {p.types.map(t => (
                 <span
                   key={t}
-                  className="inline-flex items-center rounded-full bg-yellow-400/20 text-yellow-900 dark:text-yellow-200 px-2.5 py-0.5 text-xs font-medium border border-yellow-300/30 backdrop-blur"
+                  className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border backdrop-blur"
+                  style={{
+                    backgroundColor: accentColors.accentBg20,
+                    borderColor: accentColors.accentBorder30,
+                    color: accentColors.accent,
+                  }}
                 >
                   {t}
                 </span>
@@ -76,17 +90,22 @@ const DetailCard = () => {
             <img
               src={getPokemonArtworkUrl(p.id)}
               alt={p.name}
-              className="max-h-full object-contain drop-shadow-[0_12px_36px_rgba(250,204,21,0.55)]"
+              className="max-h-full object-contain"
+              style={{
+                filter: accentColors.accentShadow55
+                  ? `drop-shadow(0 12px 36px ${accentColors.accentShadow55})`
+                  : undefined,
+              }}
               loading="lazy"
             />
 
             {/* medidas */}
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-xs text-gray-800 dark:text-gray-200">
-                Peso: {p.weight}
+                Peso: {p.weightKg}
               </span>
               <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-xs text-gray-800 dark:text-gray-200">
-                Altura: {p.height}
+                Altura: {p.heightM}
               </span>
             </div>
           </div>
@@ -118,7 +137,7 @@ const DetailCard = () => {
                 Estadísticas
               </h2>
               <div className="space-y-3">
-                {p.stats.map(s => (
+                {p.statsLabeled.map(s => (
                   <div key={s.label} className="flex items-center gap-3">
                     <div className="w-24 text-xs text-gray-700 dark:text-gray-300">{s.label}</div>
                     <div className="flex-1 h-2 rounded-full bg-white/10 border border-white/20 overflow-hidden">

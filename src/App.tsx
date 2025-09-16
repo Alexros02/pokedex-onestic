@@ -13,7 +13,7 @@ const App = () => {
       children: [
         { index: true, element: <Home /> },
         { path: 'favorite', element: <Favorite /> },
-        { path: '/pokemon', element: <Detail /> },
+        { path: 'pokemon/:id', element: <Detail /> },
         { path: 'test-components', element: <TestComponentsPage /> },
       ],
     },

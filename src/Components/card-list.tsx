@@ -2,17 +2,30 @@ import { ChevronRight, Star } from 'lucide-react';
 import { getPokemonArtworkUrl } from '../services/pokedex-service';
 import type { PokemonSimpleDetails } from '../types';
 import { generateAccentColors } from '../utils/color-utils';
+import { useNavigate } from 'react-router-dom';
 
 interface CardListProps {
   pokemon: PokemonSimpleDetails;
 }
 
 const CardList = ({ pokemon }: CardListProps) => {
+  const navigate = useNavigate();
   const accentColors = generateAccentColors(pokemon.typeColor);
   return (
     <>
       {/* Card estilo lista (horizontal) */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-md">
+      <div
+        className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-md cursor-pointer"
+        role="button"
+        tabIndex={0}
+        onClick={() => navigate(`/pokemon/${pokemon.id}`)}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            navigate(`/pokemon/${pokemon.id}`);
+          }
+        }}
+      >
         <div className="relative z-10 flex items-center gap-4 p-4 sm:p-5">
           {/* halos decorativos */}
           <div
@@ -81,6 +94,10 @@ const CardList = ({ pokemon }: CardListProps) => {
             type="button"
             aria-label="Ver detalles"
             className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 hover:bg-white/30 backdrop-blur transition text-gray-700 dark:text-gray-200"
+            onClick={e => {
+              e.stopPropagation();
+              navigate(`/pokemon/${pokemon.id}`);
+            }}
           >
             <ChevronRight className="h-5 w-5" />
           </button>

@@ -2,19 +2,32 @@ import { getPokemonArtworkUrl } from '../services/pokedex-service';
 import { Star } from 'lucide-react';
 import type { PokemonSimpleDetails } from '../types';
 import { generateAccentColors } from '../utils/color-utils';
+import { useNavigate } from 'react-router-dom';
 
 interface CardProps {
   pokemon: PokemonSimpleDetails;
 }
 
 const Card = ({ pokemon }: CardProps) => {
+  const navigate = useNavigate();
   const accentColors = generateAccentColors(pokemon.typeColor);
 
   return (
     <>
       {/* Card estilo carta Pokémon (proporción vertical y tamaño fijo, mantiene estética glass) */}
       <div className="flex justify-center">
-        <div className="relative w-72 h-[25rem] sm:w-80 sm:h-[25rem] rounded-2xl border border-white/25 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden">
+        <div
+          className="relative w-72 h-[25rem] sm:w-80 sm:h-[25rem] rounded-2xl border border-white/25 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden cursor-pointer"
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate(`/pokemon/${pokemon.id}`)}
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              navigate(`/pokemon/${pokemon.id}`);
+            }
+          }}
+        >
           {/* halos decorativos */}
           <div
             className="pointer-events-none absolute -top-24 -left-16 h-52 w-52 rounded-full blur-3xl"
