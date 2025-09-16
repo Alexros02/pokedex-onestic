@@ -8,8 +8,7 @@ interface ViewSwitchProps {
 const ViewSwitch = ({ isGridView, onToggle }: ViewSwitchProps) => {
   return (
     <div className="flex items-center gap-2 mb-6">
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Vista:</span>
-      <div className="flex bg-white/10 dark:bg-white/5 rounded-lg p-1 border border-white/20 backdrop-blur">
+      <div className="flex bg-white/10 dark:bg-white/5 rounded-lg p-1 gap-1 border border-white/20 backdrop-blur">
         <button
           onClick={onToggle}
           className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
