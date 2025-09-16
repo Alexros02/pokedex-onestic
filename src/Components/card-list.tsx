@@ -1,45 +1,47 @@
 import { ChevronRight, Star } from 'lucide-react';
 import { getPokemonArtworkUrl } from '../services/pokedex-service';
 import type { PokemonSimpleDetails } from '../types';
+import { generateAccentColors } from '../utils/color-utils';
 
 interface CardListProps {
   pokemon: PokemonSimpleDetails;
 }
 
 const CardList = ({ pokemon }: CardListProps) => {
-  const hexToRgb = (hex: string | undefined): { r: number; g: number; b: number } | undefined => {
-    if (!hex) return undefined;
-    const clean = hex.replace('#', '');
-    const bigint = parseInt(clean, 16);
-    if (Number.isNaN(bigint)) return undefined;
-    const r = (bigint >> 16) & 255;
-    const g = (bigint >> 8) & 255;
-    const b = bigint & 255;
-    return { r, g, b };
-  };
-
-  const toRgba = (hex: string | undefined, alpha: number): string | undefined => {
-    const rgb = hexToRgb(hex);
-    if (!rgb) return undefined;
-    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
-  };
-
-  const accent = pokemon.typeColor;
-  const accentBg20 = toRgba(accent, 0.2);
-  const accentBorder30 = toRgba(accent, 0.3);
-  const accentShadow50 = toRgba(accent, 0.5);
+  const accentColors = generateAccentColors(pokemon.typeColor);
   return (
     <>
       {/* Card estilo lista (horizontal) */}
       <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-md">
         <div className="relative z-10 flex items-center gap-4 p-4 sm:p-5">
+          {/* halos decorativos */}
+          <div
+            className="pointer-events-none absolute -top-24 -left-16 h-52 w-52 rounded-full blur-3xl"
+            style={{
+              backgroundImage:
+                accentColors.accentHaloStrong && accentColors.accentHaloSoft
+                  ? `linear-gradient(to bottom right, ${accentColors.accentHaloStrong}, ${accentColors.accentHaloSoft})`
+                  : undefined,
+            }}
+          ></div>
+          <div
+            className="pointer-events-none absolute -bottom-24 -right-10 h-64 w-64 rounded-full blur-3xl"
+            style={{
+              backgroundImage:
+                accentColors.accentHaloAltStrong && accentColors.accentHaloAltSoft
+                  ? `linear-gradient(to top right, ${accentColors.accentHaloAltStrong}, ${accentColors.accentHaloAltSoft})`
+                  : undefined,
+            }}
+          ></div>
           <div className="hidden sm:flex h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 rounded-xl border border-white/20 bg-white/10 items-center justify-center">
             <img
               src={getPokemonArtworkUrl(pokemon.id)}
               alt={pokemon.name}
               className="max-h-full max-w-full object-contain"
               style={{
-                filter: accentShadow50 ? `drop-shadow(0 6px 16px ${accentShadow50})` : undefined,
+                filter: accentColors.accentShadow50
+                  ? `drop-shadow(0 6px 16px ${accentColors.accentShadow50})`
+                  : undefined,
               }}
               loading="lazy"
             />
@@ -50,7 +52,11 @@ const CardList = ({ pokemon }: CardListProps) => {
               <h3 className="text-md sm:text-lg font-semibold truncate">{pokemon.name}</h3>
               <span
                 className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium border backdrop-blur"
-                style={{ backgroundColor: accentBg20, borderColor: accentBorder30, color: accent }}
+                style={{
+                  backgroundColor: accentColors.accentBg20,
+                  borderColor: accentColors.accentBorder30,
+                  color: accentColors.accent,
+                }}
               >
                 {pokemon.types.join('/')}
               </span>

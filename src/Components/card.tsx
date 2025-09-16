@@ -1,37 +1,14 @@
 import { getPokemonArtworkUrl } from '../services/pokedex-service';
 import { Star } from 'lucide-react';
 import type { PokemonSimpleDetails } from '../types';
+import { generateAccentColors } from '../utils/color-utils';
 
 interface CardProps {
   pokemon: PokemonSimpleDetails;
 }
 
 const Card = ({ pokemon }: CardProps) => {
-  const hexToRgb = (hex: string | undefined): { r: number; g: number; b: number } | undefined => {
-    if (!hex) return undefined;
-    const clean = hex.replace('#', '');
-    const bigint = parseInt(clean, 16);
-    if (Number.isNaN(bigint)) return undefined;
-    const r = (bigint >> 16) & 255;
-    const g = (bigint >> 8) & 255;
-    const b = bigint & 255;
-    return { r, g, b };
-  };
-
-  const toRgba = (hex: string | undefined, alpha: number): string | undefined => {
-    const rgb = hexToRgb(hex);
-    if (!rgb) return undefined;
-    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
-  };
-
-  const accent = pokemon.typeColor;
-  const accentBg20 = toRgba(accent, 0.2);
-  const accentBorder30 = toRgba(accent, 0.3);
-  const accentShadow55 = toRgba(accent, 0.55);
-  const accentHaloStrong = toRgba(accent, 0.4);
-  const accentHaloSoft = toRgba(accent, 0.3);
-  const accentHaloAltStrong = toRgba(accent, 0.3);
-  const accentHaloAltSoft = toRgba(accent, 0.2);
+  const accentColors = generateAccentColors(pokemon.typeColor);
 
   return (
     <>
@@ -43,8 +20,8 @@ const Card = ({ pokemon }: CardProps) => {
             className="pointer-events-none absolute -top-24 -left-16 h-52 w-52 rounded-full blur-3xl"
             style={{
               backgroundImage:
-                accentHaloStrong && accentHaloSoft
-                  ? `linear-gradient(to bottom right, ${accentHaloStrong}, ${accentHaloSoft})`
+                accentColors.accentHaloStrong && accentColors.accentHaloSoft
+                  ? `linear-gradient(to bottom right, ${accentColors.accentHaloStrong}, ${accentColors.accentHaloSoft})`
                   : undefined,
             }}
           ></div>
@@ -52,8 +29,8 @@ const Card = ({ pokemon }: CardProps) => {
             className="pointer-events-none absolute -bottom-24 -right-10 h-64 w-64 rounded-full blur-3xl"
             style={{
               backgroundImage:
-                accentHaloAltStrong && accentHaloAltSoft
-                  ? `linear-gradient(to top right, ${accentHaloAltStrong}, ${accentHaloAltSoft})`
+                accentColors.accentHaloAltStrong && accentColors.accentHaloAltSoft
+                  ? `linear-gradient(to top right, ${accentColors.accentHaloAltStrong}, ${accentColors.accentHaloAltSoft})`
                   : undefined,
             }}
           ></div>
@@ -64,9 +41,9 @@ const Card = ({ pokemon }: CardProps) => {
             <span
               className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border backdrop-blur"
               style={{
-                backgroundColor: accentBg20,
-                borderColor: accentBorder30,
-                color: accent,
+                backgroundColor: accentColors.accentBg20,
+                borderColor: accentColors.accentBorder30,
+                color: accentColors.accent,
               }}
             >
               {pokemon.types.join('/')}
@@ -80,7 +57,9 @@ const Card = ({ pokemon }: CardProps) => {
               alt={pokemon.name}
               className="max-h-full object-contain"
               style={{
-                filter: accentShadow55 ? `drop-shadow(0 8px 24px ${accentShadow55})` : undefined,
+                filter: accentColors.accentShadow55
+                  ? `drop-shadow(0 8px 24px ${accentColors.accentShadow55})`
+                  : undefined,
               }}
               loading="lazy"
             />
