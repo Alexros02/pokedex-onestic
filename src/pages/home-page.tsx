@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Card from '../Components/card';
 import CardList from '../Components/card-list';
 import ViewSwitch from '../Components/view-switch';
-import { getPokemonSimpleDetails } from '../services/pokedex.service';
+import { getPokemonSimpleDetails } from '../services/pokedex-service';
 import type { PokemonSimpleDetails } from '../types';
 
 const HomePage = () => {

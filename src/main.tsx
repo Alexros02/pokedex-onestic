@@ -7,7 +7,7 @@ import {
   fetchSinnohPokedex,
   getPokemonSimpleDetails,
   getPokemonFullDetails,
-} from './services/pokedex.service';
+} from './services/pokedex-service.ts';
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>

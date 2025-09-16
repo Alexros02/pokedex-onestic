@@ -82,6 +82,14 @@ export async function fetchSinnohPokedex(): Promise<void> {
 // Tipos importados desde src/types
 
 /**
+ * Devuelve la URL del artwork oficial para un Pokémon por su ID global.
+ * @param id ID global del Pokémon.
+ */
+export function getPokemonArtworkUrl(id: number): string {
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+}
+
+/**
  * Mapa de colores por tipo principal (aproximación de la paleta habitual).
  */
 const TYPE_COLOR: Record<string, string> = {
