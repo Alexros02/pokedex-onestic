@@ -1,7 +1,7 @@
 import logoPokedex from '../assets/logopokedex.png';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Menu, X, Home, Heart, Sun, Moon } from 'lucide-react';
+import { Menu, X, Home, Heart, Sun, Moon, TestTube } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 const Header = () => {
@@ -53,6 +53,14 @@ const Header = () => {
               <span>Favoritos</span>
             </button>
 
+            <button
+              onClick={() => navigate('/test-components')}
+              className="flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
+            >
+              <TestTube className="w-4 h-4" />
+              <span>Test</span>
+            </button>
+
             {/* Switch de tema */}
             <button
               onClick={toggleTheme}
@@ -89,6 +97,17 @@ const Header = () => {
               >
                 <Heart className="w-4 h-4" />
                 <span>Favoritos</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  navigate('/test-components');
+                  setIsMenuOpen(false);
+                }}
+                className="flex items-center space-x-3 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-left py-2 px-3 rounded hover:bg-blue-700"
+              >
+                <TestTube className="w-4 h-4" />
+                <span>Test</span>
               </button>
 
               {/* Switch de tema en menú móvil */}
