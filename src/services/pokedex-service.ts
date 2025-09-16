@@ -237,3 +237,83 @@ export async function getPokemonFullDetails(id: number): Promise<PokemonFullDeta
     stats,
   };
 }
+
+/**
+ * Lista Pokémon paginados usando el endpoint /pokemon con limit/offset y
+ * devuelve los detalles simples de cada uno.
+ * @param page Número de página (1-based).
+ * @param pageSize Tamaño de página. Por defecto 15.
+ * @returns items con detalles simples y total de elementos disponibles.
+ */
+export async function getPokemonPage(
+  page: number,
+  pageSize: number = 15
+): Promise<{ items: PokemonSimpleDetails[]; total: number }> {
+  const safePage = Math.max(1, Math.floor(page || 1));
+  const safePageSize = Math.max(1, Math.floor(pageSize || 15));
+  const offset = (safePage - 1) * safePageSize;
+
+  const listRes = await fetch(
+    `https://pokeapi.co/api/v2/pokemon?limit=${safePageSize}&offset=${offset}`
+  );
+  if (!listRes.ok) throw new Error(`HTTP ${listRes.status} (/pokemon list)`);
+  const listData = (await listRes.json()) as {
+    count: number;
+    results: { name: string; url: string }[];
+  };
+
+  const extractIdFromUrl = (url: string): number => {
+    const match = url.match(/\/pokemon\/(\d+)\/?$/);
+    return match ? Number(match[1]) : NaN;
+  };
+
+  const ids = listData.results
+    .map(r => extractIdFromUrl(r.url))
+    .filter(id => Number.isFinite(id)) as number[];
+
+  const items = await Promise.all(ids.map(id => getPokemonSimpleDetails(id)));
+  return { items, total: listData.count };
+}
+
+// --- Paginación limitada al Pokédex de Sinnoh (extendido id 6) ---
+
+let cachedSinnohIdsPromise: Promise<number[]> | undefined;
+
+async function getSinnohGlobalIds(): Promise<number[]> {
+  if (!cachedSinnohIdsPromise) {
+    cachedSinnohIdsPromise = (async () => {
+      const res = await fetch(`https://pokeapi.co/api/v2/pokedex/${SINNOH_POKEDEX_ID}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status} (/pokedex/${SINNOH_POKEDEX_ID})`);
+      const data = (await res.json()) as PokedexResponse;
+      const extractIdFromUrl = (url: string): number => {
+        const match = url.match(/\/(\d+)\/?$/);
+        return match ? Number(match[1]) : NaN;
+      };
+      const ids = data.pokemon_entries
+        .map(e => extractIdFromUrl(e.pokemon_species.url))
+        .filter(id => Number.isFinite(id)) as number[];
+      // Ordenar por id ascendente para una paginación estable
+      ids.sort((a, b) => a - b);
+      return ids;
+    })();
+  }
+  return cachedSinnohIdsPromise;
+}
+
+/**
+ * Pagina exclusivamente sobre los Pokémon del Pokédex de Sinnoh (extendido).
+ */
+export async function getSinnohPokemonPage(
+  page: number,
+  pageSize: number = 15
+): Promise<{ items: PokemonSimpleDetails[]; total: number }> {
+  const safePage = Math.max(1, Math.floor(page || 1));
+  const safePageSize = Math.max(1, Math.floor(pageSize || 15));
+  const ids = await getSinnohGlobalIds();
+  const total = ids.length;
+  const start = (safePage - 1) * safePageSize;
+  const end = Math.min(start + safePageSize, total);
+  const pageIds = ids.slice(start, end);
+  const items = await Promise.all(pageIds.map(id => getPokemonSimpleDetails(id)));
+  return { items, total };
+}

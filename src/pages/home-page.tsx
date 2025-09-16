@@ -1,14 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Card from '../Components/card';
 import CardList from '../Components/card-list';
 import ViewSwitch from '../Components/view-switch';
-import { getPokemonSimpleDetails } from '../services/pokedex-service';
+import { getSinnohPokemonPage } from '../services/pokedex-service';
 import type { PokemonSimpleDetails } from '../types';
+import Pagination from '../Components/pagination';
 
 const HomePage = () => {
   const [isGridView, setIsGridView] = useState(true);
   const [pokemons, setPokemons] = useState<PokemonSimpleDetails[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(1);
+  const pageSize = 15;
+  const [total, setTotal] = useState<number>(0);
+  const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total]);
 
   const toggleView = () => {
     setIsGridView(!isGridView);
@@ -16,11 +21,11 @@ const HomePage = () => {
 
   useEffect(() => {
     const load = async () => {
+      setIsLoading(true);
       try {
-        // Carga inicial: primeros 12 Pokémon por id global
-        const ids = Array.from({ length: 15 }, (_, i) => i + 1);
-        const result = await Promise.all(ids.map(id => getPokemonSimpleDetails(id)));
-        setPokemons(result);
+        const { items, total } = await getSinnohPokemonPage(page, pageSize);
+        setPokemons(items);
+        setTotal(total);
       } catch (error) {
         console.error('Error cargando Pokémon:', error);
       } finally {
@@ -28,7 +33,12 @@ const HomePage = () => {
       }
     };
     load();
-  }, []);
+  }, [page]);
+
+  const goToPage = (p: number) => {
+    const clamped = Math.min(Math.max(1, p), totalPages);
+    if (clamped !== page) setPage(clamped);
+  };
 
   return (
     <div className="p-2 max-w-7xl mx-auto">
@@ -52,6 +62,8 @@ const HomePage = () => {
           ))}
         </div>
       )}
+
+      <Pagination page={page} total={total} pageSize={pageSize} onChange={goToPage} />
     </div>
   );
 };
