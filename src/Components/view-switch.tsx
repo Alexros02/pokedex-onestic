@@ -19,7 +19,7 @@ const ViewSwitch = ({ isGridView, onToggle }: ViewSwitchProps) => {
           aria-label="Vista de cuadrícula"
         >
           <Grid3X3 className="h-4 w-4" />
-          Cuadrícula
+          <span className="hidden sm:inline">Cuadrícula</span>
         </button>
         <button
           onClick={onToggle}
@@ -31,7 +31,7 @@ const ViewSwitch = ({ isGridView, onToggle }: ViewSwitchProps) => {
           aria-label="Vista de lista"
         >
           <List className="h-4 w-4" />
-          Lista
+          <span className="hidden sm:inline">Lista</span>
         </button>
       </div>
     </div>

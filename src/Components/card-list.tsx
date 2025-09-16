@@ -17,7 +17,7 @@ const CardList = ({ pokemon }: CardListProps) => {
   return (
     <>
       {/* Card estilo lista (horizontal) */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 dark:bg-white/5 backdrop-blur-xl shadow-md">
+      <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-md">
         <div className="relative z-10 flex items-center gap-4 p-4 sm:p-5">
           <div className="hidden sm:flex h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 rounded-xl border border-white/20 bg-white/10 items-center justify-center">
             <img
