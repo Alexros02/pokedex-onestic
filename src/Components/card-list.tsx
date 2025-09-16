@@ -1,16 +1,9 @@
 import { ChevronRight, Star } from 'lucide-react';
 import pikachuImg from '../assets/pikachu.png';
-
-interface Pokemon {
-  id: number;
-  name: string;
-  type: string;
-  weight: string;
-  description: string;
-}
+import type { PokemonSimpleDetails } from '../types';
 
 interface CardListProps {
-  pokemon: Pokemon;
+  pokemon: PokemonSimpleDetails;
 }
 
 const CardList = ({ pokemon }: CardListProps) => {
@@ -32,11 +25,11 @@ const CardList = ({ pokemon }: CardListProps) => {
             <div className="flex items-center gap-2">
               <h3 className="text-md sm:text-lg font-semibold truncate">{pokemon.name}</h3>
               <span className="inline-flex items-center rounded-full bg-yellow-400/20 text-yellow-900 dark:text-yellow-200 px-2 py-0.5 text-[11px] font-medium border border-yellow-300/30 backdrop-blur">
-                {pokemon.type}
+                {pokemon.types.join('/')}
               </span>
             </div>
             <div className="text-xs text-gray-700 dark:text-gray-300 mt-1">
-              Peso: {pokemon.weight}
+              Peso: {(pokemon.weight / 10).toFixed(1)} kg
             </div>
             {/* descripcion que solo se muestra en tamaños de responsive lg y xl */}
             <p className="text-lg text-gray-700 dark:text-gray-300 mt-1 line-clamp-2 hidden sm:block">

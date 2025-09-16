@@ -1,16 +1,9 @@
 import pikachuImg from '../assets/pikachu.png';
 import { Star } from 'lucide-react';
-
-interface Pokemon {
-  id: number;
-  name: string;
-  type: string;
-  weight: string;
-  description: string;
-}
+import type { PokemonSimpleDetails } from '../types';
 
 interface CardProps {
-  pokemon: Pokemon;
+  pokemon: PokemonSimpleDetails;
 }
 
 const Card = ({ pokemon }: CardProps) => {
@@ -18,7 +11,7 @@ const Card = ({ pokemon }: CardProps) => {
     <>
       {/* Card estilo carta Pokémon (proporción vertical y tamaño fijo, mantiene estética glass) */}
       <div className="flex justify-center">
-        <div className="relative w-72 h-[23rem] sm:w-80 sm:h-[23rem] rounded-2xl border border-white/25 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden">
+        <div className="relative w-72 h-[25rem] sm:w-80 sm:h-[25rem] rounded-2xl border border-white/25 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden">
           {/* halos decorativos */}
           <div className="pointer-events-none absolute -top-24 -left-16 h-52 w-52 rounded-full bg-gradient-to-br from-yellow-300/40 to-amber-300/30 blur-3xl"></div>
           <div className="pointer-events-none absolute -bottom-24 -right-10 h-64 w-64 rounded-full bg-gradient-to-tr from-blue-300/30 to-purple-300/30 blur-3xl"></div>
@@ -27,7 +20,7 @@ const Card = ({ pokemon }: CardProps) => {
           <div className="relative z-10 px-4 pt-4 pb-2 flex items-center justify-between">
             <h3 className="text-xl font-semibold tracking-tight">{pokemon.name}</h3>
             <span className="inline-flex items-center rounded-full bg-yellow-400/20 text-yellow-900 dark:text-yellow-200 px-2.5 py-0.5 text-xs font-medium border border-yellow-300/30 backdrop-blur">
-              {pokemon.type}
+              {pokemon.types.join('/')}
             </span>
           </div>
 
@@ -44,7 +37,7 @@ const Card = ({ pokemon }: CardProps) => {
           {/* información */}
           <div className="relative z-10 px-4 pt-3">
             <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">
-              Peso: {pokemon.weight}
+              Peso: {(pokemon.weight / 10).toFixed(1)} kg
             </div>
             <p className="text-sm text-gray-700 dark:text-gray-300">{pokemon.description}</p>
           </div>
