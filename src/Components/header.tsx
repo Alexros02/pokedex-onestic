@@ -53,13 +53,7 @@ const Header = () => {
               <span>Favoritos</span>
             </button>
 
-            <button
-              onClick={() => navigate('/test-components')}
-              className="flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
-            >
-              <TestTube className="w-4 h-4" />
-              <span>Test</span>
-            </button>
+            
 
             {/* Switch de tema */}
             <button
