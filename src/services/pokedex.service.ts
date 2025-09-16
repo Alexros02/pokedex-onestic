@@ -12,25 +12,11 @@
  * - Para imprimir "<id>. <nombre>", se extrae el ID global a partir de la URL de `pokemon_species`.
  * - Para Sinnoh existen dos Pokédex en PokéAPI: original (id 5) y extendido (id 6).
  */
-/**
- * Entrada de Pokédex regional en PokéAPI.
- */
-export type PokedexEntry = {
-  entry_number: number;
-  pokemon_species: {
-    name: string;
-    url: string;
-  };
-};
-
-/**
- * Respuesta del endpoint /pokedex/{id} de PokéAPI.
- */
-export type PokedexResponse = {
-  name: string;
-  id: number;
-  pokemon_entries: PokedexEntry[];
-};
+import type { PokedexResponse } from '../types/pokedex';
+export type { PokedexEntry } from '../types/pokedex';
+import type { PokemonApi, PokemonSimpleDetails, PokemonFullDetails } from '../types/pokemon';
+export type { PokemonSimpleDetails, PokemonFullDetails } from '../types/pokemon';
+import type { SpeciesApi } from '../types/species';
 
 /**
  * Identificador del Pokédex de Sinnoh extendido (Platinum) en PokéAPI.
@@ -93,26 +79,7 @@ export async function fetchSinnohPokedex(): Promise<void> {
 
 // --- Nuevos servicios de detalles por ID ---
 
-/**
- * Subconjunto de la respuesta de /pokemon/{id} de PokéAPI.
- */
-type PokemonApi = {
-  id: number;
-  name: string;
-  height: number; // decímetros
-  weight: number; // hectogramos
-  types: { slot: number; type: { name: string; url: string } }[];
-  abilities: { ability: { name: string; url: string }; is_hidden: boolean; slot: number }[];
-  stats: { base_stat: number; stat: { name: string } }[];
-};
-
-/**
- * Subconjunto de la respuesta de /pokemon-species/{id} de PokéAPI.
- */
-type SpeciesApi = {
-  color?: { name: string };
-  flavor_text_entries: { flavor_text: string; language: { name: string } }[];
-};
+// Tipos importados desde src/types
 
 /**
  * Mapa de colores por tipo principal (aproximación de la paleta habitual).
@@ -174,17 +141,7 @@ function normalizeFlavor(flavorEntries: SpeciesApi['flavor_text_entries']): stri
   return entry.flavor_text.replace(/\s+/g, ' ').trim();
 }
 
-/**
- * Detalles simples de un Pokémon.
- */
-export type PokemonSimpleDetails = {
-  id: number;
-  name: string;
-  types: string[];
-  typeColor?: string; // color del tipo principal
-  weight: number; // en hectogramos (API). Conversión a kg: weight/10
-  description?: string;
-};
+// Tipos de salida reexportados desde src/types
 
 /**
  * Obtiene detalles simples de un Pokémon por `id`.
@@ -220,18 +177,7 @@ export async function getPokemonSimpleDetails(id: number): Promise<PokemonSimple
   };
 }
 
-export type PokemonFullDetails = PokemonSimpleDetails & {
-  height: number; // decímetros. Conversión a m: height/10
-  abilities: string[];
-  stats: {
-    hp?: number;
-    attack?: number;
-    defense?: number;
-    specialAttack?: number;
-    specialDefense?: number;
-    speed?: number;
-  };
-};
+// Tipos de salida reexportados desde src/types
 
 /**
  * Obtiene detalles completos de un Pokémon por `id`.
