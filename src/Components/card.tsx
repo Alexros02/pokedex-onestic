@@ -18,7 +18,7 @@ const Card = ({ pokemon }: CardProps) => {
     <>
       {/* Card estilo carta Pokémon (proporción vertical y tamaño fijo, mantiene estética glass) */}
       <div className="flex justify-center">
-        <div className="relative w-72 h-[23rem] sm:w-80 sm:h-[23rem] rounded-2xl border border-white/25 bg-white/10 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden">
+        <div className="relative w-72 h-[23rem] sm:w-80 sm:h-[23rem] rounded-2xl border border-white/25 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden">
           {/* halos decorativos */}
           <div className="pointer-events-none absolute -top-24 -left-16 h-52 w-52 rounded-full bg-gradient-to-br from-yellow-300/40 to-amber-300/30 blur-3xl"></div>
           <div className="pointer-events-none absolute -bottom-24 -right-10 h-64 w-64 rounded-full bg-gradient-to-tr from-blue-300/30 to-purple-300/30 blur-3xl"></div>
