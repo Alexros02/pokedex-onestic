@@ -84,7 +84,7 @@ const CardList = ({ pokemon }: CardListProps) => {
             </p>
           </div>
 
-          <div className="inline-flex items-center justify-center h-10 w-10 ml-auto">
+          <div className="inline-flex items-center justify-center h-10 w-fit ml-auto">
             <FavButton pokemonId={pokemon.id} />
           </div>
 
