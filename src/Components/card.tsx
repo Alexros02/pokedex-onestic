@@ -1,4 +1,4 @@
-import { getPokemonArtworkUrl } from '../services/pokedex-service';
+import { getPokemonArtworkUrl, translateTypeToEs } from '../services/pokedex-service';
 import type { PokemonSimpleDetails } from '../types';
 import { generateAccentColors } from '../utils/color-utils';
 import { useNavigate } from 'react-router-dom';
@@ -59,7 +59,7 @@ const Card = ({ pokemon }: CardProps) => {
                 color: accentColors.accent,
               }}
             >
-              {pokemon.types.join('/')}
+              {pokemon.types.map(translateTypeToEs).join('/')}
             </span>
           </div>
 

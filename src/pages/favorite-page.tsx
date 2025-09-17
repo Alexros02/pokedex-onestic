@@ -7,6 +7,7 @@ import type { PokemonSimpleDetails } from '../types';
 import { getPokemonData, getSinnohTypeNames } from '../services/pokedex-service';
 import Pagination from '../Components/pagination';
 import TypeFilter from '../Components/type-filter';
+import { TYPE_LABEL_ES } from '../services/pokedex-service';
 
 const FavoritePage = () => {
   const [isGridView, setIsGridView] = useState<boolean>(() => {
@@ -99,7 +100,12 @@ const FavoritePage = () => {
         <h1 className="text-3xl inline-block px-2 title-glass">Favoritos</h1>
         <div className="mt-4 flex items-center justify-between gap-4">
           <ViewSwitch isGridView={isGridView} onToggle={toggleView} />
-          <TypeFilter types={sinnohTypes} value={selectedType} onChange={setSelectedType} />
+          <TypeFilter
+            types={sinnohTypes}
+            value={selectedType}
+            onChange={setSelectedType}
+            labelsMap={TYPE_LABEL_ES}
+          />
         </div>
       </div>
 

@@ -94,7 +94,7 @@ const TypeFilter = ({ types, value, onChange, labelsMap }: TypeFilterProps) => {
                             )} 100%)`
                           : `linear-gradient(135deg, ${hexToRgba(opt.color, 0.12)} 0%, ${hexToRgba(
                               opt.color,
-                              0.20
+                              0.2
                             )} 100%)`,
                     }
                   : undefined

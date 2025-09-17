@@ -113,6 +113,31 @@ const TYPE_COLOR: Record<string, string> = {
   fairy: '#D685AD',
 };
 
+export const TYPE_LABEL_ES: Record<string, string> = {
+  normal: 'Normal',
+  fire: 'Fuego',
+  water: 'Agua',
+  electric: 'Eléctrico',
+  grass: 'Planta',
+  ice: 'Hielo',
+  fighting: 'Lucha',
+  poison: 'Veneno',
+  ground: 'Tierra',
+  flying: 'Volador',
+  psychic: 'Psíquico',
+  bug: 'Bicho',
+  rock: 'Roca',
+  ghost: 'Fantasma',
+  dragon: 'Dragón',
+  dark: 'Siniestro',
+  steel: 'Acero',
+  fairy: 'Hada',
+};
+
+export function translateTypeToEs(typeName: string): string {
+  return TYPE_LABEL_ES[typeName] ?? typeName;
+}
+
 /**
  * Obtiene el color asociado a un tipo primario.
  * @param primaryType nombre del tipo (por ejemplo, "fire").
@@ -211,10 +236,22 @@ export async function getPokemonFullDetails(id: number): Promise<PokemonFullDeta
     .sort((a, b) => a.slot - b.slot)
     .map(t => t.type.name);
 
-  const abilities = pokemon.abilities
-    .slice()
-    .sort((a, b) => a.slot - b.slot)
-    .map(a => a.ability.name);
+  const abilityEntries = pokemon.abilities.slice().sort((a, b) => a.slot - b.slot);
+  const abilities = await Promise.all(
+    abilityEntries.map(async a => {
+      try {
+        const res = await fetch(a.ability.url);
+        if (!res.ok) return a.ability.name;
+        const data = (await res.json()) as {
+          names?: { language?: { name?: string }; name?: string }[];
+        };
+        const es = data.names?.find(n => n.language?.name === 'es')?.name;
+        return es ?? a.ability.name;
+      } catch {
+        return a.ability.name;
+      }
+    })
+  );
 
   const stats = {
     hp: getStat(pokemon.stats, 'hp'),

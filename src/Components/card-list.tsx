@@ -1,5 +1,5 @@
 import { ChevronRight } from 'lucide-react';
-import { getPokemonArtworkUrl } from '../services/pokedex-service';
+import { getPokemonArtworkUrl, translateTypeToEs } from '../services/pokedex-service';
 import type { PokemonSimpleDetails } from '../types';
 import { generateAccentColors } from '../utils/color-utils';
 import { useNavigate } from 'react-router-dom';
@@ -72,7 +72,7 @@ const CardList = ({ pokemon }: CardListProps) => {
                   color: accentColors.accent,
                 }}
               >
-                {pokemon.types.join('/')}
+                {pokemon.types.map(translateTypeToEs).join('/')}
               </span>
             </div>
             <div className="text-xs text-gray-700 dark:text-gray-300 mt-1">
@@ -85,7 +85,7 @@ const CardList = ({ pokemon }: CardListProps) => {
           </div>
 
           <div className="inline-flex items-center justify-center h-10 w-10 ml-auto">
-          <FavButton pokemonId={pokemon.id}  />
+            <FavButton pokemonId={pokemon.id} />
           </div>
 
           <button

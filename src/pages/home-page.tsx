@@ -11,6 +11,7 @@ import {
 import type { PokemonSimpleDetails } from '../types';
 import Pagination from '../Components/pagination';
 import TypeFilter from '../Components/type-filter';
+import { TYPE_LABEL_ES } from '../services/pokedex-service';
 
 const HomePage = () => {
   const [isGridView, setIsGridView] = useState<boolean>(() => {
@@ -104,7 +105,12 @@ const HomePage = () => {
         <div className="flex items-center justify-between gap-4">
           <ViewSwitch isGridView={isGridView} onToggle={toggleView} />
           <div className="flex items-center">
-            <TypeFilter types={sinnohTypes} value={selectedType} onChange={setSelectedType} />
+            <TypeFilter
+              types={sinnohTypes}
+              value={selectedType}
+              onChange={setSelectedType}
+              labelsMap={TYPE_LABEL_ES}
+            />
           </div>
         </div>
       </div>

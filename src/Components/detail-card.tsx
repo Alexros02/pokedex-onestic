@@ -1,4 +1,4 @@
-import { getPokemonArtworkUrl } from '../services/pokedex-service';
+import { getPokemonArtworkUrl, translateTypeToEs } from '../services/pokedex-service';
 import type { PokemonFullDetails } from '../types';
 import { generateAccentColors } from '../utils/color-utils';
 import FavButton from './fav-button';
@@ -64,7 +64,7 @@ const DetailCard = ({ pokemon }: DetailCardProps) => {
                     color: accentColors.accent,
                   }}
                 >
-                  {t}
+                  {translateTypeToEs(t)}
                 </span>
               ))}
             </div>
@@ -73,7 +73,6 @@ const DetailCard = ({ pokemon }: DetailCardProps) => {
                 #{p.id.toString().padStart(3, '0')}
               </span>
               <FavButton pokemonId={p.id} />
-             
             </div>
           </div>
         </div>
