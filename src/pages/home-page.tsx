@@ -57,8 +57,9 @@ const HomePage = () => {
 
   return (
     <div className="p-2 max-w-7xl mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-secondary mb-4">Bienvenido a pokedex</h1>
+      <div className="text-center my-8">
+        <h1 className="text-4xl mb-4 title-glass">Pokemons de Sinnoh</h1>
+
         <ViewSwitch isGridView={isGridView} onToggle={toggleView} />
       </div>
 

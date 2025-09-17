@@ -21,8 +21,15 @@ const Header = () => {
           <div className="flex items-center space-x-2 sm:space-x-3">
             <img src={logoPokedex} alt="Logo" className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
             <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-              <span className="hidden sm:inline">Pokédex Onestic</span>
-              <span className="sm:hidden">Pokédex</span>
+            <span className="hidden sm:inline"
+            style={{
+              fontFamily: '"Pokemon Solid"',
+              color: '#f2d20c',
+              WebkitTextStroke: '0.3px #111827',
+              fontSize: '1.7rem',
+            }}>Pokédex </span>
+            <span className="hidden sm:inline">Onestic</span>
+              
             </h1>
           </div>
 
