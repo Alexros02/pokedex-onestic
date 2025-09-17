@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Card from '../Components/card';
 import CardList from '../Components/card-list';
 import ViewSwitch from '../Components/view-switch';
 import { useFavorites } from '../contexts/FavoritesContext';
 import type { PokemonSimpleDetails } from '../types';
 import { getPokemonData } from '../services/pokedex-service';
+import Pagination from '../Components/pagination';
 
 const FavoritePage = () => {
   const [isGridView, setIsGridView] = useState<boolean>(() => {
@@ -18,6 +19,10 @@ const FavoritePage = () => {
   const { favoriteIds } = useFavorites();
   const [pokemonData, setPokemonData] = useState<PokemonSimpleDetails[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(1);
+  const pageSize = 15;
+  const total = favoriteIds.length;
+  const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total]);
 
   const toggleView = () => {
     setIsGridView(prev => {
@@ -32,11 +37,19 @@ const FavoritePage = () => {
   };
 
   useEffect(() => {
+    // Ajusta la página si cambia el número de favoritos
+    setPage(prev => Math.min(Math.max(1, prev), totalPages));
+  }, [totalPages]);
+
+  useEffect(() => {
     const load = async () => {
       setIsLoading(true);
       try {
-        const pokemonData = await getPokemonData(favoriteIds);
-        setPokemonData(pokemonData);
+        const start = (page - 1) * pageSize;
+        const end = Math.min(start + pageSize, total);
+        const pageIds = favoriteIds.slice(start, end);
+        const data = await getPokemonData(pageIds);
+        setPokemonData(data);
       } catch (error) {
         console.error('Error cargando Pokémon:', error);
       } finally {
@@ -44,7 +57,12 @@ const FavoritePage = () => {
       }
     };
     load();
-  }, [favoriteIds]);
+  }, [favoriteIds, page, total]);
+
+  const goToPage = (p: number) => {
+    const clamped = Math.min(Math.max(1, p), totalPages);
+    if (clamped !== page) setPage(clamped);
+  };
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Cargando...</div>;
@@ -71,6 +89,9 @@ const FavoritePage = () => {
             <CardList key={pokemon.id} pokemon={pokemon} />
           ))}
         </div>
+      )}
+      {total > pageSize && (
+        <Pagination page={page} total={total} pageSize={pageSize} onChange={goToPage} />
       )}
     </div>
   );
