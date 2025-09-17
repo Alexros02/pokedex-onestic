@@ -317,3 +317,7 @@ export async function getSinnohPokemonPage(
   const items = await Promise.all(pageIds.map(id => getPokemonSimpleDetails(id)));
   return { items, total };
 }
+
+export async function getPokemonData(ids: number[]): Promise<PokemonSimpleDetails[]> {
+  return Promise.all(ids.map(id => getPokemonSimpleDetails(id)));
+}

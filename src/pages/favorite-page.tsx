@@ -1,62 +1,54 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Card from '../Components/card';
 import CardList from '../Components/card-list';
 import ViewSwitch from '../Components/view-switch';
-
-
+import { useFavorites } from '../contexts/FavoritesContext';
+import type { PokemonSimpleDetails } from '../types';
+import { getPokemonData } from '../services/pokedex-service';
 
 const FavoritePage = () => {
-  const [isGridView, setIsGridView] = useState(true);
+  const [isGridView, setIsGridView] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('pokedex:view:isGrid');
+      return saved !== null ? JSON.parse(saved) : true;
+    } catch {
+      return true;
+    }
+  });
+  const { favoriteIds } = useFavorites();
+  const [pokemonData, setPokemonData] = useState<PokemonSimpleDetails[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const toggleView = () => {
-    setIsGridView(!isGridView);
+    setIsGridView(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem('pokedex:view:isGrid', JSON.stringify(next));
+      } catch (error) {
+        console.warn('No se pudo guardar la preferencia de vista', error);
+      }
+      return next;
+    });
   };
 
-  // Datos de ejemplo para los Pokémon
-  const pokemonData = [
-    {
-      id: 1,
-      name: 'Pikachu',
-      type: 'Eléctrico',
-      weight: '6.0 kg',
-      description: 'Pokémon ágil que acumula electricidad en las mejillas.',
-    },
-    {
-      id: 2,
-      name: 'Charizard',
-      type: 'Fuego/Volador',
-      weight: '90.5 kg',
-      description: 'Pokémon dragón que puede volar a gran altura.',
-    },
-    {
-      id: 3,
-      name: 'Blastoise',
-      type: 'Agua',
-      weight: '85.5 kg',
-      description: 'Pokémon tortuga con cañones de agua en su caparazón.',
-    },
-    {
-      id: 4,
-      name: 'Venusaur',
-      type: 'Planta/Veneno',
-      weight: '100.0 kg',
-      description: 'Pokémon planta que libera un aroma dulce.',
-    },
-    {
-      id: 5,
-      name: 'Mewtwo',
-      type: 'Psíquico',
-      weight: '122.0 kg',
-      description: 'Pokémon legendario creado genéticamente.',
-    },
-    {
-      id: 6,
-      name: 'Mew',
-      type: 'Psíquico',
-      weight: '4.0 kg',
-      description: 'Pokémon mítico considerado el ancestro de todos.',
-    },
-  ];
+  useEffect(() => {
+    const load = async () => {
+      setIsLoading(true);
+      try {
+        const pokemonData = await getPokemonData(favoriteIds);
+        setPokemonData(pokemonData);
+      } catch (error) {
+        console.error('Error cargando Pokémon:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    load();
+  }, [favoriteIds]);
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-screen">Cargando...</div>;
+  }
 
   return (
     <div className="p-2 max-w-5xl mx-auto">
@@ -67,13 +59,13 @@ const FavoritePage = () => {
 
       {isGridView ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {pokemonData.map(pokemon => (
+          {pokemonData.map((pokemon: PokemonSimpleDetails) => (
             <Card key={pokemon.id} pokemon={pokemon} />
           ))}
         </div>
       ) : (
         <div className="space-y-6">
-          {pokemonData.map(pokemon => (
+          {pokemonData.map((pokemon: PokemonSimpleDetails) => (
             <CardList key={pokemon.id} pokemon={pokemon} />
           ))}
         </div>

@@ -1,8 +1,8 @@
 import { getPokemonArtworkUrl } from '../services/pokedex-service';
-import { Star } from 'lucide-react';
 import type { PokemonSimpleDetails } from '../types';
 import { generateAccentColors } from '../utils/color-utils';
 import { useNavigate } from 'react-router-dom';
+import FavButton from './fav-button';
 
 interface CardProps {
   pokemon: PokemonSimpleDetails;
@@ -94,13 +94,9 @@ const Card = ({ pokemon }: CardProps) => {
           </div>
 
           {/* botón favorito */}
-          <button
-            type="button"
-            aria-label="Añadir a favoritos"
-            className="absolute bottom-3 right-3 z-20 inline-flex items-center justify-center h-10 w-10 rounded-full border border-white/30 bg-white/20 backdrop-blur text-yellow-500 dark:text-yellow-300 hover:bg-white/30 transition shadow-md"
-          >
-            <Star className="h-5 w-5" />
-          </button>
+          <div className="absolute bottom-3 right-3 z-30">
+          <FavButton pokemonId={pokemon.id} />
+          </div>
         </div>
       </div>
     </>

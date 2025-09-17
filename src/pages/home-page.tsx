@@ -7,7 +7,14 @@ import type { PokemonSimpleDetails } from '../types';
 import Pagination from '../Components/pagination';
 
 const HomePage = () => {
-  const [isGridView, setIsGridView] = useState(true);
+  const [isGridView, setIsGridView] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('pokedex:view:isGrid');
+      return saved !== null ? JSON.parse(saved) : true;
+    } catch {
+      return true;
+    }
+  });
   const [pokemons, setPokemons] = useState<PokemonSimpleDetails[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
@@ -16,7 +23,13 @@ const HomePage = () => {
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total]);
 
   const toggleView = () => {
-    setIsGridView(!isGridView);
+    setIsGridView(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem('pokedex:view:isGrid', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
   };
 
   useEffect(() => {
