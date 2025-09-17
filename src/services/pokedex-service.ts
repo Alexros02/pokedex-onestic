@@ -92,7 +92,7 @@ export function getPokemonArtworkUrl(id: number): string {
 /**
  * Mapa de colores por tipo principal (aproximación de la paleta habitual).
  */
-const TYPE_COLOR: Record<string, string> = {
+export const TYPE_COLOR: Record<string, string> = {
   normal: '#A8A77A',
   fire: '#EE8130',
   water: '#6390F0',

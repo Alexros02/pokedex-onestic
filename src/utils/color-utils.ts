@@ -12,7 +12,17 @@ export const hexToRgb = (
 ): { r: number; g: number; b: number } | undefined => {
   if (!hex) return undefined;
   const clean = hex.replace('#', '');
-  const bigint = parseInt(clean, 16);
+
+  // Manejar colores de 3 caracteres (ej: #F73 -> #FF7733)
+  const expanded =
+    clean.length === 3
+      ? clean
+          .split('')
+          .map(char => char + char)
+          .join('')
+      : clean;
+
+  const bigint = parseInt(expanded, 16);
   if (Number.isNaN(bigint)) return undefined;
   const r = (bigint >> 16) & 255;
   const g = (bigint >> 8) & 255;
