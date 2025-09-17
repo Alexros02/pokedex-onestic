@@ -4,8 +4,9 @@ import CardList from '../Components/card-list';
 import ViewSwitch from '../Components/view-switch';
 import { useFavorites } from '../contexts/FavoritesContext';
 import type { PokemonSimpleDetails } from '../types';
-import { getPokemonData } from '../services/pokedex-service';
+import { getPokemonData, getSinnohTypeNames } from '../services/pokedex-service';
 import Pagination from '../Components/pagination';
+import TypeFilter from '../Components/type-filter';
 
 const FavoritePage = () => {
   const [isGridView, setIsGridView] = useState<boolean>(() => {
@@ -17,12 +18,23 @@ const FavoritePage = () => {
     }
   });
   const { favoriteIds } = useFavorites();
-  const [pokemonData, setPokemonData] = useState<PokemonSimpleDetails[]>([]);
+  const [allFavoritesData, setAllFavoritesData] = useState<PokemonSimpleDetails[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
   const pageSize = 15;
-  const total = favoriteIds.length;
-  const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total]);
+  const [selectedType, setSelectedType] = useState<string>('all');
+  const [sinnohTypes, setSinnohTypes] = useState<string[]>([]);
+
+  const filteredData = useMemo(() => {
+    if (selectedType === 'all') return allFavoritesData;
+    return allFavoritesData.filter(p => p.types.includes(selectedType));
+  }, [allFavoritesData, selectedType]);
+
+  const totalFiltered = filteredData.length;
+  const totalPages = useMemo(
+    () => Math.max(1, Math.ceil(totalFiltered / pageSize)),
+    [totalFiltered]
+  );
 
   const toggleView = () => {
     setIsGridView(prev => {
@@ -37,27 +49,40 @@ const FavoritePage = () => {
   };
 
   useEffect(() => {
-    // Ajusta la página si cambia el número de favoritos
+    // Ajusta la página si cambia el total filtrado
     setPage(prev => Math.min(Math.max(1, prev), totalPages));
   }, [totalPages]);
 
   useEffect(() => {
-    const load = async () => {
+    const loadAllFavorites = async () => {
       setIsLoading(true);
       try {
-        const start = (page - 1) * pageSize;
-        const end = Math.min(start + pageSize, total);
-        const pageIds = favoriteIds.slice(start, end);
-        const data = await getPokemonData(pageIds);
-        setPokemonData(data);
+        const data = await getPokemonData(favoriteIds);
+        setAllFavoritesData(data);
       } catch (error) {
-        console.error('Error cargando Pokémon:', error);
+        console.error('Error cargando Pokémon favoritos:', error);
       } finally {
         setIsLoading(false);
       }
     };
-    load();
-  }, [favoriteIds, page, total]);
+    loadAllFavorites();
+  }, [favoriteIds]);
+
+  useEffect(() => {
+    const loadTypes = async () => {
+      try {
+        const names = await getSinnohTypeNames();
+        setSinnohTypes(names);
+      } catch (err) {
+        console.warn('No se pudieron cargar los tipos de Sinnoh', err);
+      }
+    };
+    loadTypes();
+  }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [selectedType]);
 
   const goToPage = (p: number) => {
     const clamped = Math.min(Math.max(1, p), totalPages);
@@ -72,26 +97,31 @@ const FavoritePage = () => {
     <div className="p-2 max-w-7xl mx-auto">
       <div className="text-center my-8">
         <h1 className="text-3xl inline-block px-2 title-glass">Favoritos</h1>
-        <div className="mt-4">
+        <div className="mt-4 flex items-center justify-between gap-4">
           <ViewSwitch isGridView={isGridView} onToggle={toggleView} />
+          <TypeFilter types={sinnohTypes} value={selectedType} onChange={setSelectedType} />
         </div>
       </div>
 
       {isGridView ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {pokemonData.map((pokemon: PokemonSimpleDetails) => (
-            <Card key={pokemon.id} pokemon={pokemon} />
-          ))}
+          {filteredData
+            .slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize)
+            .map((pokemon: PokemonSimpleDetails) => (
+              <Card key={pokemon.id} pokemon={pokemon} />
+            ))}
         </div>
       ) : (
         <div className="space-y-6">
-          {pokemonData.map((pokemon: PokemonSimpleDetails) => (
-            <CardList key={pokemon.id} pokemon={pokemon} />
-          ))}
+          {filteredData
+            .slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize)
+            .map((pokemon: PokemonSimpleDetails) => (
+              <CardList key={pokemon.id} pokemon={pokemon} />
+            ))}
         </div>
       )}
-      {total > pageSize && (
-        <Pagination page={page} total={total} pageSize={pageSize} onChange={goToPage} />
+      {totalFiltered > pageSize && (
+        <Pagination page={page} total={totalFiltered} pageSize={pageSize} onChange={goToPage} />
       )}
     </div>
   );
