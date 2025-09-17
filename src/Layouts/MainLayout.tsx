@@ -23,10 +23,10 @@ const MainLayout = () => {
           isDarkMode ? 'bg-black/50' : 'bg-white/40'
         } z-0 pointer-events-none`}
       />
-      <div className="relative z-10">
+      <div className="relative z-50">
         <Header />
       </div>
-      <main className="relative z-10 flex-1 min-h-0 overflow-y-auto dark:text-white">
+      <main className="relative z-10 flex-1 min-h-0 overflow-y-auto dark:text-white pt-12 sm:pt-16 lg:pt-20">
         <Outlet /> {/* Renderiza las páginas */}
       </main>
       {/*<footer/>*/}

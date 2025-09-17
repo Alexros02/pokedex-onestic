@@ -52,7 +52,7 @@ const FavoritePage = () => {
 
   return (
     <div className="p-2 max-w-7xl mx-auto">
-      <div className="text-center mb-8">
+      <div className="text-center my-8">
         <h1 className="text-3xl inline-block px-2 title-glass">Favoritos</h1>
         <div className="mt-4">
           <ViewSwitch isGridView={isGridView} onToggle={toggleView} />
