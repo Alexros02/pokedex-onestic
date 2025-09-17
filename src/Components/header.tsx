@@ -19,7 +19,8 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="flex justify-between items-center py-2 sm:py-3 lg:py-4">
           {/* Logo y título */}
-          <div className="flex items-center space-x-2  sm:space-x-3">
+          <div onClick={() => navigate('/')}
+          className="cursor-pointer flex items-center space-x-2  sm:space-x-3">
             <img src={logoPokedex} alt="Logo" className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
             <div className=" h-fit items-center   font-bold text-white flex items-center gap-2 justify-center">
               
@@ -40,7 +41,7 @@ const Header = () => {
           <nav className="hidden sm:flex space-x-4 md:space-x-6 lg:space-x-8">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
+              className="cursor-pointer flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
             >
               <Home className="w-4 h-4" />
               <span>Inicio</span>
@@ -48,7 +49,7 @@ const Header = () => {
 
             <button
               onClick={() => navigate('/favorite')}
-              className="flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
+              className="cursor-pointer flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
             >
               <Heart className="w-4 h-4" />
               <span>Favoritos</span>
@@ -57,7 +58,7 @@ const Header = () => {
             {/* Switch de tema */}
             <button
               onClick={toggleTheme}
-              className="flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
+              className="cursor-pointer flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm md:text-base"
               aria-label={isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
             >
               {isDarkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
