@@ -27,7 +27,9 @@ const HomePage = () => {
       const next = !prev;
       try {
         localStorage.setItem('pokedex:view:isGrid', JSON.stringify(next));
-      } catch {}
+      } catch (error) {
+        console.warn('No se pudo guardar la preferencia de vista', error);
+      }
       return next;
     });
   };

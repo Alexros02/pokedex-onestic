@@ -16,7 +16,7 @@ const CardList = ({ pokemon }: CardListProps) => {
     <>
       {/* Card estilo lista (horizontal) */}
       <div
-        className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-md cursor-pointer"
+        className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/30 dark:bg-white/5 backdrop-blur-xl group transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:bg-white/40 dark:hover:bg-white/10 shadow-md cursor-pointer"
         role="button"
         tabIndex={0}
         onClick={() => navigate(`/pokemon/${pokemon.id}`)}
@@ -30,7 +30,7 @@ const CardList = ({ pokemon }: CardListProps) => {
         <div className="relative z-10 flex items-center gap-4 p-4 sm:p-5">
           {/* halos decorativos */}
           <div
-            className="pointer-events-none absolute -top-24 -left-16 h-52 w-52 rounded-full blur-3xl"
+            className="pointer-events-none absolute -top-24 -left-16 h-52 w-52 rounded-full blur-3xl "
             style={{
               backgroundImage:
                 accentColors.accentHaloStrong && accentColors.accentHaloSoft
@@ -47,7 +47,7 @@ const CardList = ({ pokemon }: CardListProps) => {
                   : undefined,
             }}
           ></div>
-          <div className="hidden sm:flex h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 rounded-xl border border-white/20 bg-white/10 items-center justify-center">
+          <div className="hidden sm:flex h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 rounded-xl    items-center justify-center">
             <img
               src={getPokemonArtworkUrl(pokemon.id)}
               alt={pokemon.name}

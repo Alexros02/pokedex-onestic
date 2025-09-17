@@ -51,14 +51,14 @@ const FavoritePage = () => {
   }
 
   return (
-    <div className="p-2 max-w-5xl mx-auto">
+    <div className="p-2 max-w-7xl mx-auto">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-secondary mb-4">Favoritos</h1>
         <ViewSwitch isGridView={isGridView} onToggle={toggleView} />
       </div>
 
       {isGridView ? (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {pokemonData.map((pokemon: PokemonSimpleDetails) => (
             <Card key={pokemon.id} pokemon={pokemon} />
           ))}

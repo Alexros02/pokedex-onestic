@@ -17,7 +17,7 @@ const Card = ({ pokemon }: CardProps) => {
       {/* Card estilo carta Pokémon (proporción vertical y tamaño fijo, mantiene estética glass) */}
       <div className="flex justify-center">
         <div
-          className="relative w-72 h-[25rem] sm:w-80 sm:h-[25rem] rounded-2xl border border-white/25 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden cursor-pointer"
+          className="relative w-72 h-[25rem] sm:w-80 sm:h-[25rem] rounded-2xl border  border-white/25 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden cursor-pointer group transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:bg-white/40 dark:hover:bg-white/10"
           role="button"
           tabIndex={0}
           onClick={() => navigate(`/pokemon/${pokemon.id}`)}
@@ -68,7 +68,7 @@ const Card = ({ pokemon }: CardProps) => {
             <img
               src={getPokemonArtworkUrl(pokemon.id)}
               alt={pokemon.name}
-              className="max-h-full object-contain"
+              className="max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               style={{
                 filter: accentColors.accentShadow55
                   ? `drop-shadow(0 8px 24px ${accentColors.accentShadow55})`
@@ -95,7 +95,7 @@ const Card = ({ pokemon }: CardProps) => {
 
           {/* botón favorito */}
           <div className="absolute bottom-3 right-3 z-30">
-          <FavButton pokemonId={pokemon.id} />
+            <FavButton pokemonId={pokemon.id} />
           </div>
         </div>
       </div>
