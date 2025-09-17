@@ -1,7 +1,7 @@
-import { getPokemonArtworkUrl } from '../services/pokedex-service';
-import { Star } from 'lucide-react';
+import { getPokemonArtworkUrl, translateTypeToEs } from '../services/pokedex-service';
 import type { PokemonFullDetails } from '../types';
 import { generateAccentColors } from '../utils/color-utils';
+import FavButton from './fav-button';
 
 type DetailCardProps = {
   pokemon: PokemonFullDetails;
@@ -64,7 +64,7 @@ const DetailCard = ({ pokemon }: DetailCardProps) => {
                     color: accentColors.accent,
                   }}
                 >
-                  {t}
+                  {translateTypeToEs(t)}
                 </span>
               ))}
             </div>
@@ -72,13 +72,7 @@ const DetailCard = ({ pokemon }: DetailCardProps) => {
               <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[11px] text-gray-800 dark:text-gray-200">
                 #{p.id.toString().padStart(3, '0')}
               </span>
-              <button
-                type="button"
-                aria-label="Añadir a favoritos"
-                className="inline-flex items-center justify-center h-10 w-10 rounded-full border border-white/30 bg-white/20 backdrop-blur text-yellow-600 dark:text-yellow-300 hover:bg-white/30 transition shadow-md"
-              >
-                <Star className="h-5 w-5" />
-              </button>
+              <FavButton pokemonId={p.id} />
             </div>
           </div>
         </div>

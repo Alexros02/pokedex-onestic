@@ -113,12 +113,37 @@ const TYPE_COLOR: Record<string, string> = {
   fairy: '#D685AD',
 };
 
+export const TYPE_LABEL_ES: Record<string, string> = {
+  normal: 'Normal',
+  fire: 'Fuego',
+  water: 'Agua',
+  electric: 'Eléctrico',
+  grass: 'Planta',
+  ice: 'Hielo',
+  fighting: 'Lucha',
+  poison: 'Veneno',
+  ground: 'Tierra',
+  flying: 'Volador',
+  psychic: 'Psíquico',
+  bug: 'Bicho',
+  rock: 'Roca',
+  ghost: 'Fantasma',
+  dragon: 'Dragón',
+  dark: 'Siniestro',
+  steel: 'Acero',
+  fairy: 'Hada',
+};
+
+export function translateTypeToEs(typeName: string): string {
+  return TYPE_LABEL_ES[typeName] ?? typeName;
+}
+
 /**
  * Obtiene el color asociado a un tipo primario.
  * @param primaryType nombre del tipo (por ejemplo, "fire").
  * @returns color hexadecimal o `undefined` si no existe mapeo.
  */
-function getTypeColor(primaryType: string | undefined): string | undefined {
+export function getTypeColor(primaryType: string | undefined): string | undefined {
   if (!primaryType) return undefined;
   return TYPE_COLOR[primaryType] ?? undefined;
 }
@@ -211,10 +236,22 @@ export async function getPokemonFullDetails(id: number): Promise<PokemonFullDeta
     .sort((a, b) => a.slot - b.slot)
     .map(t => t.type.name);
 
-  const abilities = pokemon.abilities
-    .slice()
-    .sort((a, b) => a.slot - b.slot)
-    .map(a => a.ability.name);
+  const abilityEntries = pokemon.abilities.slice().sort((a, b) => a.slot - b.slot);
+  const abilities = await Promise.all(
+    abilityEntries.map(async a => {
+      try {
+        const res = await fetch(a.ability.url);
+        if (!res.ok) return a.ability.name;
+        const data = (await res.json()) as {
+          names?: { language?: { name?: string }; name?: string }[];
+        };
+        const es = data.names?.find(n => n.language?.name === 'es')?.name;
+        return es ?? a.ability.name;
+      } catch {
+        return a.ability.name;
+      }
+    })
+  );
 
   const stats = {
     hp: getStat(pokemon.stats, 'hp'),
@@ -279,7 +316,7 @@ export async function getPokemonPage(
 
 let cachedSinnohIdsPromise: Promise<number[]> | undefined;
 
-async function getSinnohGlobalIds(): Promise<number[]> {
+export async function getSinnohGlobalIds(): Promise<number[]> {
   if (!cachedSinnohIdsPromise) {
     cachedSinnohIdsPromise = (async () => {
       const res = await fetch(`https://pokeapi.co/api/v2/pokedex/${SINNOH_POKEDEX_ID}`);
@@ -316,4 +353,64 @@ export async function getSinnohPokemonPage(
   const pageIds = ids.slice(start, end);
   const items = await Promise.all(pageIds.map(id => getPokemonSimpleDetails(id)));
   return { items, total };
+}
+
+export async function getPokemonData(ids: number[]): Promise<PokemonSimpleDetails[]> {
+  return Promise.all(ids.map(id => getPokemonSimpleDetails(id)));
+}
+
+/**
+ * Devuelve la lista de nombres de tipos que existen en el Pokédex de Sinnoh.
+ * Optimiza llamadas usando el endpoint de tipos e intersección con los IDs de Sinnoh.
+ */
+export async function getSinnohTypeNames(): Promise<string[]> {
+  const sinnohIds = await getSinnohGlobalIds();
+  const setSinnoh = new Set(sinnohIds);
+  const listRes = await fetch('https://pokeapi.co/api/v2/type');
+  if (!listRes.ok) throw new Error(`HTTP ${listRes.status} (/type)`);
+  const listData = (await listRes.json()) as { results: { name: string; url: string }[] };
+
+  const detailPromises = listData.results.map(async t => {
+    const res = await fetch(t.url);
+    if (!res.ok) return undefined;
+    const data = (await res.json()) as {
+      name: string;
+      pokemon: { pokemon: { name: string; url: string } }[];
+    };
+    const hasInSinnoh = data.pokemon.some(p => {
+      const match = p.pokemon.url.match(/\/pokemon\/(\d+)\/?$/);
+      const id = match ? Number(match[1]) : NaN;
+      return Number.isFinite(id) && setSinnoh.has(id);
+    });
+    return hasInSinnoh ? data.name : undefined;
+  });
+
+  const names = (await Promise.all(detailPromises)).filter(
+    (n): n is string => typeof n === 'string'
+  );
+
+  // Orden fijo por nombre para estabilidad visual
+  names.sort((a, b) => a.localeCompare(b));
+  return names;
+}
+
+/**
+ * Devuelve los IDs globales de Pokémon de Sinnoh que pertenecen al tipo indicado.
+ */
+export async function getSinnohIdsByType(typeName: string): Promise<number[]> {
+  const sinnohIds = await getSinnohGlobalIds();
+  const setSinnoh = new Set(sinnohIds);
+  const res = await fetch(`https://pokeapi.co/api/v2/type/${typeName}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status} (/type/${typeName})`);
+  const data = (await res.json()) as {
+    pokemon: { pokemon: { url: string } }[];
+  };
+  const ids = data.pokemon
+    .map(p => {
+      const m = p.pokemon.url.match(/\/pokemon\/(\d+)\/?$/);
+      return m ? Number(m[1]) : NaN;
+    })
+    .filter(id => Number.isFinite(id) && setSinnoh.has(id)) as number[];
+  ids.sort((a, b) => a - b);
+  return ids;
 }

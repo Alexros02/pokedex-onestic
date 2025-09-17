@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMemo } from 'react';
 
 interface PaginationProps {
@@ -21,7 +22,7 @@ const Pagination = ({ page, total, pageSize = 15, onChange }: PaginationProps) =
     const end = Math.min(totalPages, page + 2);
     for (let i = start; i <= end; i++) pages.push(i);
     return (
-      <div className="flex items-center gap-2">
+      <div className="hidden sm:flex items-center gap-2">
         {start > 1 && (
           <button
             type="button"
@@ -62,9 +63,10 @@ const Pagination = ({ page, total, pageSize = 15, onChange }: PaginationProps) =
 
   return (
     <div className="mt-8 flex items-center justify-center gap-4">
+      {/* Botones y numeración para >= sm */}
       <button
         type="button"
-        className="px-4 py-2 rounded-md border border-white/30 bg-white/20 backdrop-blur text-gray-800 dark:text-gray-200 hover:bg-white/30 transition shadow-md disabled:opacity-50"
+        className="hidden sm:inline-flex px-4 py-2 rounded-md border border-white/30 bg-white/20 backdrop-blur text-gray-800 dark:text-gray-200 hover:bg-white/30 transition shadow-md disabled:opacity-50"
         onClick={() => goToPage(page - 1)}
         disabled={page <= 1}
       >
@@ -73,12 +75,37 @@ const Pagination = ({ page, total, pageSize = 15, onChange }: PaginationProps) =
       {renderPageNumbers()}
       <button
         type="button"
-        className="px-4 py-2 rounded-md border border-white/30 bg-white/20 backdrop-blur text-gray-800 dark:text-gray-200 hover:bg-white/30 transition shadow-md disabled:opacity-50"
+        className="hidden sm:inline-flex px-4 py-2 rounded-md border border-white/30 bg-white/20 backdrop-blur text-gray-800 dark:text-gray-200 hover:bg-white/30 transition shadow-md disabled:opacity-50"
         onClick={() => goToPage(page + 1)}
         disabled={page >= totalPages}
       >
         Siguiente
       </button>
+
+      {/* Versión compacta */}
+      <div className="flex items-center gap-3 sm:hidden">
+        <button
+          type="button"
+          aria-label="Página anterior"
+          className="px-3 py-1 rounded-md border border-white/30 bg-white/20 backdrop-blur text-gray-800 dark:text-gray-200 hover:bg-white/30 transition shadow-md disabled:opacity-50"
+          onClick={() => goToPage(page - 1)}
+          disabled={page <= 1}
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <span className="text-sm text-gray-800 dark:text-gray-200">
+          {page} / {totalPages}
+        </span>
+        <button
+          type="button"
+          aria-label="Página siguiente"
+          className="px-3 py-1 rounded-md border border-white/30 bg-white/20 backdrop-blur text-gray-800 dark:text-gray-200 hover:bg-white/30 transition shadow-md disabled:opacity-50"
+          onClick={() => goToPage(page + 1)}
+          disabled={page >= totalPages}
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      </div>
     </div>
   );
 };

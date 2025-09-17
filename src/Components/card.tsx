@@ -1,8 +1,8 @@
-import { getPokemonArtworkUrl } from '../services/pokedex-service';
-import { Star } from 'lucide-react';
+import { getPokemonArtworkUrl, translateTypeToEs } from '../services/pokedex-service';
 import type { PokemonSimpleDetails } from '../types';
 import { generateAccentColors } from '../utils/color-utils';
 import { useNavigate } from 'react-router-dom';
+import FavButton from './fav-button';
 
 interface CardProps {
   pokemon: PokemonSimpleDetails;
@@ -17,7 +17,7 @@ const Card = ({ pokemon }: CardProps) => {
       {/* Card estilo carta Pokémon (proporción vertical y tamaño fijo, mantiene estética glass) */}
       <div className="flex justify-center">
         <div
-          className="relative w-72 h-[25rem] sm:w-80 sm:h-[25rem] rounded-2xl border border-white/25 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden cursor-pointer"
+          className="relative w-72 h-[25rem] sm:w-80 sm:h-[25rem] rounded-2xl border  border-white/25 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden cursor-pointer group transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:bg-white/40 dark:hover:bg-white/10"
           role="button"
           tabIndex={0}
           onClick={() => navigate(`/pokemon/${pokemon.id}`)}
@@ -59,7 +59,7 @@ const Card = ({ pokemon }: CardProps) => {
                 color: accentColors.accent,
               }}
             >
-              {pokemon.types.join('/')}
+              {pokemon.types.map(translateTypeToEs).join('/')}
             </span>
           </div>
 
@@ -68,7 +68,7 @@ const Card = ({ pokemon }: CardProps) => {
             <img
               src={getPokemonArtworkUrl(pokemon.id)}
               alt={pokemon.name}
-              className="max-h-full object-contain"
+              className="max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               style={{
                 filter: accentColors.accentShadow55
                   ? `drop-shadow(0 8px 24px ${accentColors.accentShadow55})`
@@ -94,13 +94,9 @@ const Card = ({ pokemon }: CardProps) => {
           </div>
 
           {/* botón favorito */}
-          <button
-            type="button"
-            aria-label="Añadir a favoritos"
-            className="absolute bottom-3 right-3 z-20 inline-flex items-center justify-center h-10 w-10 rounded-full border border-white/30 bg-white/20 backdrop-blur text-yellow-500 dark:text-yellow-300 hover:bg-white/30 transition shadow-md"
-          >
-            <Star className="h-5 w-5" />
-          </button>
+          <div className="absolute bottom-3 right-3 z-30">
+            <FavButton pokemonId={pokemon.id} />
+          </div>
         </div>
       </div>
     </>
