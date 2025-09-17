@@ -20,6 +20,7 @@ const Card = ({ pokemon }: CardProps) => {
           className="relative w-72 h-[25rem] sm:w-80 sm:h-[25rem] rounded-2xl border  border-white/25 bg-white/30 dark:bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden cursor-pointer group transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl hover:bg-white/40 dark:hover:bg-white/10"
           role="button"
           tabIndex={0}
+          aria-label={`Ver detalles de ${pokemon.name}`}
           onClick={() => navigate(`/pokemon/${pokemon.id}`)}
           onKeyDown={e => {
             if (e.key === 'Enter' || e.key === ' ') {
