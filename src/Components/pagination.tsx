@@ -1,6 +1,10 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMemo } from 'react';
 
+/**
+ * Paginación para listas: navegación previa/siguiente y numeración.
+ * Mantiene coherencia visual entre vista compacta (móvil) y completa.
+ */
 interface PaginationProps {
   page: number;
   total: number;
@@ -37,10 +41,10 @@ const Pagination = ({ page, total, pageSize = 15, onChange }: PaginationProps) =
           <button
             key={p}
             type="button"
-            className={`px-3 py-1 rounded-md border text-sm ${
+            className={`px-3 py-1 rounded-md border text-sm transition shadow-md ${
               p === page
-                ? 'bg-white/20 border-white/30 text-gray-800 dark:text-gray-200 hover:bg-white/30 transition shadow-md'
-                : 'bg-transparent text-gray-800 dark:text-gray-200 hover:bg-white/30 transition shadow-md'
+                ? 'bg-white/20 border-white/30 text-gray-800 dark:text-gray-200 hover:bg-white/30'
+                : 'bg-transparent text-gray-800 dark:text-gray-200 hover:bg-white/30'
             }`}
             onClick={() => goToPage(p)}
           >

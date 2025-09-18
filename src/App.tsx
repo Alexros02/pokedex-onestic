@@ -5,7 +5,9 @@ import Favorite from './pages/favorite-page';
 import Detail from './pages/detail-page';
 
 const App = () => {
-  const routes = useRoutes([
+  // Define el árbol de rutas de la aplicación. Usa `MainLayout` como layout raíz
+  // y expone tres rutas: inicio, favoritos y detalle por `id`.
+  return useRoutes([
     {
       path: '/',
       element: <MainLayout />,
@@ -16,8 +18,6 @@ const App = () => {
       ],
     },
   ]);
-
-  return routes;
 };
 
 export default App;

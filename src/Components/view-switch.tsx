@@ -1,5 +1,9 @@
 import { Grid3X3, List } from 'lucide-react';
 
+/**
+ * Conmutador de vista: alterna entre cuadrícula y lista.
+ * Muestra estado visual activo para la vista seleccionada.
+ */
 interface ViewSwitchProps {
   isGridView: boolean;
   onToggle: () => void;
@@ -11,7 +15,7 @@ const ViewSwitch = ({ isGridView, onToggle }: ViewSwitchProps) => {
       <div className="flex bg-white/10 dark:bg-white/5 rounded-lg p-1 gap-1 border border-white/20 backdrop-blur">
         <button
           onClick={onToggle}
-          className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+          className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition duration-200 ${
             isGridView
               ? 'bg-white/20 text-gray-900 dark:text-white shadow-sm'
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
@@ -23,7 +27,7 @@ const ViewSwitch = ({ isGridView, onToggle }: ViewSwitchProps) => {
         </button>
         <button
           onClick={onToggle}
-          className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+          className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition duration-200 ${
             !isGridView
               ? 'bg-white/20 text-gray-900 dark:text-white shadow-sm'
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'

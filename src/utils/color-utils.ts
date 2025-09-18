@@ -1,11 +1,11 @@
 /**
- * Utilidades para manejo de colores de accent en los componentes de tarjetas
+ * Utilidades para manejar colores de acento usados en componentes de tarjetas.
  */
 
 /**
- * Convierte un color hexadecimal a RGB
- * @param hex - Color en formato hexadecimal (con o sin #)
- * @returns Objeto con valores RGB o undefined si el color no es válido
+ * Convierte un color hexadecimal a RGB.
+ * @param hex Color en formato hexadecimal (con o sin `#`).
+ * @returns Objeto `{ r, g, b }` o `undefined` si el color no es válido.
  */
 export const hexToRgb = (
   hex: string | undefined
@@ -13,7 +13,7 @@ export const hexToRgb = (
   if (!hex) return undefined;
   const clean = hex.replace('#', '');
 
-  // Manejar colores de 3 caracteres (ej: #F73 -> #FF7733)
+  // Soporte para formato corto de 3 caracteres (p. ej., #F73 -> #FF7733)
   const expanded =
     clean.length === 3
       ? clean
@@ -31,10 +31,10 @@ export const hexToRgb = (
 };
 
 /**
- * Convierte un color hexadecimal a RGBA con transparencia
- * @param hex - Color en formato hexadecimal (con o sin #)
- * @param alpha - Valor de transparencia (0-1)
- * @returns Color en formato RGBA o undefined si el color no es válido
+ * Convierte un color hexadecimal a RGBA con transparencia.
+ * @param hex Color en formato hexadecimal (con o sin `#`).
+ * @param alpha Valor de transparencia en rango [0, 1].
+ * @returns Cadena `rgba(r, g, b, a)` o `undefined` si el color no es válido.
  */
 export const toRgba = (hex: string | undefined, alpha: number): string | undefined => {
   const rgb = hexToRgb(hex);
@@ -43,7 +43,7 @@ export const toRgba = (hex: string | undefined, alpha: number): string | undefin
 };
 
 /**
- * Configuraciones de colores de accent para componentes de tarjetas
+ * Configuración de colores de acento derivada de un color base.
  */
 export interface AccentColorConfig {
   accent: string | undefined;
@@ -58,9 +58,9 @@ export interface AccentColorConfig {
 }
 
 /**
- * Genera todas las configuraciones de colores de accent basadas en un color base
- * @param typeColor - Color base del tipo de Pokémon
- * @returns Configuración completa de colores de accent
+ * Genera una configuración completa de colores de acento a partir de un color base.
+ * @param typeColor Color base (hexadecimal) del tipo de Pokémon.
+ * @returns Objeto `AccentColorConfig` con variantes de opacidad predefinidas.
  */
 export const generateAccentColors = (typeColor: string | undefined): AccentColorConfig => {
   return {

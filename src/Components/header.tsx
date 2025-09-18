@@ -5,6 +5,11 @@ import { Menu, X, Home, Heart, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import logoOnestic from '../assets/pokedexonestic.png';
 
+/**
+ * Cabecera principal de la app: logo, navegación y switch de tema.
+ *
+ * - Presenta navegación para desktop y menú hamburguesa en móvil.
+ */
 const Header = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,12 +24,13 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="flex justify-between items-center py-2 sm:py-3 lg:py-4">
           {/* Logo y título */}
-          <div onClick={() => navigate('/')}
-          className="cursor-pointer flex items-center space-x-2  sm:space-x-3">
+          <div
+            onClick={() => navigate('/')}
+            className="cursor-pointer flex items-center space-x-2 sm:space-x-3"
+          >
             <img src={logoPokedex} alt="Logo" className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
-            <div className=" h-fit items-center   font-bold text-white flex items-center gap-2 justify-center">
-              
-              <img src={logoOnestic} alt="Logo" className=" inline sm:h-9   h-6" />
+            <div className="h-fit font-bold text-white flex items-center gap-2 justify-center">
+              <img src={logoOnestic} alt="Logo" className="inline sm:h-9 h-6" />
             </div>
           </div>
 
@@ -92,7 +98,6 @@ const Header = () => {
                 <Heart className="w-4 h-4" />
                 <span>Favoritos</span>
               </button>
-
 
               {/* Switch de tema en menú móvil */}
               <button

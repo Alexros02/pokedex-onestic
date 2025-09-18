@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Card from '../Components/card';
 import CardList from '../Components/card-list';
 import ViewSwitch from '../Components/view-switch';
@@ -9,10 +9,15 @@ import Pagination from '../Components/pagination';
 import TypeFilter from '../Components/type-filter';
 import { TYPE_LABEL_ES } from '../services/pokedex-service';
 
+/**
+ * Página que lista los Pokémon favoritos con vista de cuadrícula/lista,
+ * filtro por tipo y paginación. Persiste la vista en localStorage.
+ */
 const FavoritePage = () => {
+  const VIEW_STORAGE_KEY = 'pokedex:view:isGrid';
   const [isGridView, setIsGridView] = useState<boolean>(() => {
     try {
-      const saved = localStorage.getItem('pokedex:view:isGrid');
+      const saved = localStorage.getItem(VIEW_STORAGE_KEY);
       return saved !== null ? JSON.parse(saved) : true;
     } catch {
       return true;
@@ -37,17 +42,17 @@ const FavoritePage = () => {
     [totalFiltered]
   );
 
-  const toggleView = () => {
+  const toggleView = useCallback(() => {
     setIsGridView(prev => {
       const next = !prev;
       try {
-        localStorage.setItem('pokedex:view:isGrid', JSON.stringify(next));
+        localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify(next));
       } catch (error) {
         console.warn('No se pudo guardar la preferencia de vista', error);
       }
       return next;
     });
-  };
+  }, []);
 
   useEffect(() => {
     // Ajusta la página si cambia el total filtrado
@@ -85,10 +90,14 @@ const FavoritePage = () => {
     setPage(1);
   }, [selectedType]);
 
-  const goToPage = (p: number) => {
-    const clamped = Math.min(Math.max(1, p), totalPages);
-    if (clamped !== page) setPage(clamped);
-  };
+  /** Cambia a una página válida dentro del rango disponible. */
+  const goToPage = useCallback(
+    (p: number) => {
+      const clamped = Math.min(Math.max(1, p), totalPages);
+      if (clamped !== page) setPage(clamped);
+    },
+    [page, totalPages]
+  );
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Cargando...</div>;
