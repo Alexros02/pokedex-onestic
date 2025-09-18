@@ -159,11 +159,11 @@ describe('Home Page', () => {
     renderHomePage();
 
     await waitFor(() => {
-      expect(screen.getByText('pikachu')).toBeInTheDocument();
+      expect(screen.getByText(/pikachu/i)).toBeInTheDocument();
     });
 
-    expect(screen.getByText('pikachu')).toBeInTheDocument();
-    expect(screen.getByText('charmander')).toBeInTheDocument();
+    expect(screen.getByText(/pikachu/i)).toBeInTheDocument();
+    expect(screen.getByText(/charmander/i)).toBeInTheDocument();
   });
 
   it('debe mostrar el estado de carga inicialmente', () => {

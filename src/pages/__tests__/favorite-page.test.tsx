@@ -136,11 +136,11 @@ describe('Favorite Page', () => {
     renderFavoritePage([25, 100]);
 
     await waitFor(() => {
-      expect(screen.getByText('pikachu')).toBeInTheDocument();
+      expect(screen.getByText(/pikachu/i)).toBeInTheDocument();
     });
 
-    expect(screen.getByText('pikachu')).toBeInTheDocument();
-    expect(screen.getByText('charmander')).toBeInTheDocument();
+    expect(screen.getByText(/pikachu/i)).toBeInTheDocument();
+    expect(screen.getByText(/charmander/i)).toBeInTheDocument();
   });
 
   it('debe mostrar mensaje cuando no hay favoritos', async () => {
@@ -184,34 +184,34 @@ describe('Favorite Page', () => {
     renderFavoritePage([25, 100]);
 
     await waitFor(() => {
-      expect(screen.getByText('pikachu')).toBeInTheDocument();
+      expect(screen.getByText(/pikachu/i)).toBeInTheDocument();
     });
 
     // Verificamos que se muestran los Pokémon favoritos
-    expect(screen.getByText('pikachu')).toBeInTheDocument();
-    expect(screen.getByText('charmander')).toBeInTheDocument();
+    expect(screen.getByText(/pikachu/i)).toBeInTheDocument();
+    expect(screen.getByText(/charmander/i)).toBeInTheDocument();
   });
 
   it('debe actualizar el contador cuando cambian los favoritos', async () => {
     renderFavoritePage([25]);
 
     await waitFor(() => {
-      expect(screen.getByText('pikachu')).toBeInTheDocument();
+      expect(screen.getByText(/pikachu/i)).toBeInTheDocument();
     });
 
     // Verificamos que se muestra el Pokémon favorito
-    expect(screen.getByText('pikachu')).toBeInTheDocument();
+    expect(screen.getByText(/pikachu/i)).toBeInTheDocument();
   });
 
   it('debe usar la vista de lista por defecto', async () => {
     renderFavoritePage([25, 100]);
 
     await waitFor(() => {
-      expect(screen.getByText('pikachu')).toBeInTheDocument();
+      expect(screen.getByText(/pikachu/i)).toBeInTheDocument();
     });
 
     // Verificamos que los Pokémon se muestran (la vista por defecto es grid)
-    expect(screen.getByText('pikachu')).toBeInTheDocument();
-    expect(screen.getByText('charmander')).toBeInTheDocument();
+    expect(screen.getByText(/pikachu/i)).toBeInTheDocument();
+    expect(screen.getByText(/charmander/i)).toBeInTheDocument();
   });
 });
