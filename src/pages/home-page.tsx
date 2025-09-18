@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Card from '../Components/card';
 import CardList from '../Components/card-list';
 import ViewSwitch from '../Components/view-switch';
@@ -13,10 +13,15 @@ import Pagination from '../Components/pagination';
 import TypeFilter from '../Components/type-filter';
 import { TYPE_LABEL_ES } from '../services/pokedex-service';
 
+/**
+ * Página principal: lista de Pokémon de Sinnoh con vista grid/lista,
+ * filtro por tipo y paginación. Persiste la preferencia de vista.
+ */
 const HomePage = () => {
+  const VIEW_STORAGE_KEY = 'pokedex:view:isGrid';
   const [isGridView, setIsGridView] = useState<boolean>(() => {
     try {
-      const saved = localStorage.getItem('pokedex:view:isGrid');
+      const saved = localStorage.getItem(VIEW_STORAGE_KEY);
       return saved !== null ? JSON.parse(saved) : true;
     } catch {
       return true;
@@ -32,17 +37,17 @@ const HomePage = () => {
   const [sinnohTypes, setSinnohTypes] = useState<string[]>([]);
   const [filteredTotal, setFilteredTotal] = useState<number | null>(null);
 
-  const toggleView = () => {
+  const toggleView = useCallback(() => {
     setIsGridView(prev => {
       const next = !prev;
       try {
-        localStorage.setItem('pokedex:view:isGrid', JSON.stringify(next));
+        localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify(next));
       } catch (error) {
         console.warn('No se pudo guardar la preferencia de vista', error);
       }
       return next;
     });
-  };
+  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -88,10 +93,14 @@ const HomePage = () => {
     setPage(1);
   }, [selectedType]);
 
-  const goToPage = (p: number) => {
-    const clamped = Math.min(Math.max(1, p), totalPages);
-    if (clamped !== page) setPage(clamped);
-  };
+  /** Cambia a una página válida dentro de los límites. */
+  const goToPage = useCallback(
+    (p: number) => {
+      const clamped = Math.min(Math.max(1, p), totalPages);
+      if (clamped !== page) setPage(clamped);
+    },
+    [page, totalPages]
+  );
 
   const filteredPokemons = useMemo(() => {
     if (selectedType === 'all') return pokemons;

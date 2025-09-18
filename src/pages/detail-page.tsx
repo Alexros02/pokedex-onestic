@@ -5,13 +5,16 @@ import { useEffect, useState } from 'react';
 import { getPokemonFullDetails } from '../services/pokedex-service';
 import type { PokemonFullDetails } from '../types';
 
+/**
+ * Página de detalle de un Pokémon.
+ * Obtiene los datos completos según el `id` de la URL y muestra `DetailCard`.
+ */
 const DetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [pokemon, setPokemon] = useState<PokemonFullDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
 
   useEffect(() => {
     const load = async () => {
@@ -20,6 +23,10 @@ const DetailPage = () => {
       setError(null);
       try {
         const numericId = Number(id);
+        if (Number.isNaN(numericId)) {
+          setError('Identificador inválido');
+          return;
+        }
         const data = await getPokemonFullDetails(numericId);
         setPokemon(data);
       } catch (e) {

@@ -1,6 +1,8 @@
+/* Tailwind base + variante para modo oscuro controlado por clase `.dark` */
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Paleta de colores semántica para tematizar utilidades */
 @theme {
   --color-primary: #007bff;
   --color-secondary: #6c757d;
@@ -12,6 +14,7 @@
   --color-dark: #343a40;
 }
 
+/* Fuentes personalizadas usadas en títulos estilo Pokémon */
 @font-face {
   font-family: 'Pokemon Solid';
   src: url('/fonts/pokemon/Pokemon Solid.ttf') format('truetype');
@@ -28,7 +31,10 @@
   font-display: swap;
 }
 
-/* Título con efecto glass/traslúcido estilo Pokémon */
+/*
+  Título con efecto glass/traslúcido estilo Pokémon.
+  Se usa combinando degradados y recorte de fondo para simular brillo.
+*/
 .title-glass {
   font-family: 'Pokemon Solid';
   letter-spacing: 0.1em;

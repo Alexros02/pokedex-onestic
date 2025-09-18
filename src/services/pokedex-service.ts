@@ -1,16 +1,17 @@
 /**
- * Servicio para trabajar con datos de Pokémon de la región de Sinnoh usando la PokéAPI.
+ * Servicio de acceso a datos de Pokémon basado en PokéAPI.
  *
- * Incluye utilidades para:
- * - Imprimir por consola el Pokédex regional extendido de Sinnoh (id 6) en formato "<id>. <nombre>".
- * - Obtener detalles simples por `id` (nombre, tipos, color de tipo, id, peso, descripción).
- * - Obtener detalles completos por `id` (lo anterior + habilidades, altura y estadísticas base).
+ * Funcionalidades principales:
+ * - Listado del Pokédex de Sinnoh extendido (Platinum, id 6) y utilidades relacionadas
+ * - Obtención de detalles simples y completos por `id` global de Pokémon
+ * - Paginación general (endpoint `/pokemon`) y paginación restringida a Sinnoh
+ * - Filtros de tipos para el conjunto de Pokémon pertenecientes al Pokédex de Sinnoh
  *
- * Notas importantes:
- * - `entry_number` en `pokemon_entries` representa el número en el Pokédex regional,
- *   que puede diferir del ID global (el que se usa en endpoints como /pokemon/{id}).
- * - Para imprimir "<id>. <nombre>", se extrae el ID global a partir de la URL de `pokemon_species`.
- * - Para Sinnoh existen dos Pokédex en PokéAPI: original (id 5) y extendido (id 6).
+ * Consideraciones:
+ * - El Pokédex regional y el `id` global difieren: algunas operaciones requieren extraer el `id` desde URLs
+ *   de recursos (p. ej., `pokemon-species`) que contienen el `id` global al final.
+ * - Existen dos Pokédex de Sinnoh en PokéAPI: id 5 (original) e id 6 (extendido). Este servicio usa el 6.
+ * - Se utiliza caché en memoria para los IDs globales de Sinnoh con el objetivo de minimizar llamadas redundantes.
  */
 import type { PokedexResponse } from '../types/pokedex';
 export type { PokedexEntry } from '../types/pokedex';
@@ -20,23 +21,23 @@ import type { SpeciesApi } from '../types/species';
 
 /**
  * Identificador del Pokédex de Sinnoh extendido (Platinum) en PokéAPI.
- * - 5: Sinnoh (original)
- * - 6: Sinnoh (extendido)
+ * @see https://pokeapi.co/api/v2/pokedex/6
  */
 const SINNOH_POKEDEX_ID = 6;
 
 /**
- * Obtiene el Pokédex regional de Sinnoh (extendido) y lo imprime por consola.
+ * Obtiene el Pokédex de Sinnoh (extendido) y lo imprime por consola.
  *
- * Salida por consola:
- * - Línea 1: Resumen con total de entradas y el id del Pokédex utilizado
- * - Resto: Una línea por Pokémon en formato "<id>. <nombre>" ordenado por id ascendente
+ * Formato de salida:
+ * - Primera línea: resumen con total de entradas y el id del Pokédex usado
+ * - Resto de líneas: `<id>. <nombre>` ordenado por `id` global ascendente
  *
- * Ejemplo de salida:
- * [Sinnoh Pokédex] Total: 210 (pokedex/6)
- * 25. pikachu
- * 26. raichu
- * ...
+ * Ejemplo:
+ * `[Sinnoh Pokédex] Total: 210 (pokedex/6)`
+ * `25. pikachu`
+ * `26. raichu`
+ *
+ * Manejo de errores: registra en consola si la llamada HTTP no es satisfactoria.
  */
 export async function fetchSinnohPokedex(): Promise<void> {
   try {
@@ -46,15 +47,9 @@ export async function fetchSinnohPokedex(): Promise<void> {
     }
     const data = (await response.json()) as PokedexResponse;
     /**
-     * Extrae el ID global de la especie desde la URL de `pokemon_species`.
-     * Ejemplo: https://pokeapi.co/api/v2/pokemon-species/25/ => 25
-     */
-    /**
-     * Extrae el ID global de la especie desde la URL de `pokemon_species`.
-     * @param url URL del recurso `pokemon-species`.
-     * @returns ID global de la especie o NaN si no se puede extraer.
-     * @example
-     *  extractIdFromUrl('https://pokeapi.co/api/v2/pokemon-species/25/') // => 25
+     * Extrae el `id` global de la URL de `pokemon-species`.
+     * @param url URL con formato `.../pokemon-species/{id}/`
+     * @returns `id` como número o `NaN` si no coincide el patrón
      */
     const extractIdFromUrl = (url: string): number => {
       const match = url.match(/\/(\d+)\/?$/);
@@ -77,21 +72,16 @@ export async function fetchSinnohPokedex(): Promise<void> {
   }
 }
 
-// --- Nuevos servicios de detalles por ID ---
-
-// Tipos importados desde src/types
-
 /**
- * Devuelve la URL del artwork oficial para un Pokémon por su ID global.
- * @param id ID global del Pokémon.
+ * Construye la URL del artwork oficial de un Pokémon.
+ * @param id `id` global de Pokémon
+ * @returns URL al sprite de artwork oficial
  */
 export function getPokemonArtworkUrl(id: number): string {
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
 }
 
-/**
- * Mapa de colores por tipo principal (aproximación de la paleta habitual).
- */
+/** Mapa de colores por tipo principal (aproximación habitual). */
 export const TYPE_COLOR: Record<string, string> = {
   normal: '#A8A77A',
   fire: '#EE8130',
@@ -139,9 +129,9 @@ export function translateTypeToEs(typeName: string): string {
 }
 
 /**
- * Obtiene el color asociado a un tipo primario.
- * @param primaryType nombre del tipo (por ejemplo, "fire").
- * @returns color hexadecimal o `undefined` si no existe mapeo.
+ * Obtiene el color hexadecimal asociado a un tipo primario.
+ * @param primaryType nombre del tipo en minúsculas (p. ej., `fire`)
+ * @returns color hexadecimal o `undefined` si no hay mapeo
  */
 export function getTypeColor(primaryType: string | undefined): string | undefined {
   if (!primaryType) return undefined;
@@ -149,10 +139,10 @@ export function getTypeColor(primaryType: string | undefined): string | undefine
 }
 
 /**
- * Busca una estadística concreta en el array de stats.
- * @param stats lista de estadísticas base devuelta por /pokemon/{id}.
- * @param key nombre de la estadística (hp, attack, defense, special-attack, special-defense, speed).
- * @returns valor base de la estadística o `undefined` si no existe.
+ * Obtiene el valor base de una estadística por nombre.
+ * @param stats arreglo de estadísticas devuelto por `/pokemon/{id}`
+ * @param key nombre interno de la estadística (`hp`, `attack`, `defense`, `special-attack`, `special-defense`, `speed`)
+ * @returns valor base o `undefined` si no se encuentra
  */
 function getStat(stats: PokemonApi['stats'], key: string): number | undefined {
   const found = stats.find(s => s.stat.name === key);
@@ -160,10 +150,10 @@ function getStat(stats: PokemonApi['stats'], key: string): number | undefined {
 }
 
 /**
- * Normaliza el texto descriptivo seleccionando español (si existe) o inglés y
- * colapsando espacios/saltos de línea.
- * @param flavorEntries lista de descripciones en distintos idiomas.
- * @returns descripción normalizada o `undefined` si no hay entradas.
+ * Normaliza la descripción de especie priorizando ES y, en su defecto, EN.
+ * Colapsa espacios y saltos de línea para obtener una frase continua.
+ * @param flavorEntries entradas de `flavor_text` por idioma
+ * @returns descripción normalizada o `undefined` si no hay entradas válidas
  */
 function normalizeFlavor(flavorEntries: SpeciesApi['flavor_text_entries']): string | undefined {
   const entry =
@@ -174,14 +164,14 @@ function normalizeFlavor(flavorEntries: SpeciesApi['flavor_text_entries']): stri
   return entry.flavor_text.replace(/\s+/g, ' ').trim();
 }
 
-// Tipos de salida reexportados desde src/types
-
 /**
- * Obtiene detalles simples de un Pokémon por `id`.
- * Combina llamadas a `/pokemon/{id}` y `/pokemon-species/{id}` en paralelo.
- * @param id ID global del Pokémon.
- * @returns objeto con id, nombre, tipos, color del tipo principal, peso y descripción.
- * @throws Error si alguna llamada HTTP no es satisfactoria.
+ * Obtiene detalles simples de un Pokémon combinando `/pokemon/{id}` y `/pokemon-species/{id}` en paralelo.
+ *
+ * Incluye: `id`, `name`, `types` (ordenados por `slot`), `typeColor`, `weight` y `description` normalizada.
+ *
+ * @param id `id` global del Pokémon
+ * @returns detalles simples listos para mostrar en UI
+ * @throws Error si alguna respuesta HTTP no es satisfactoria
  */
 export async function getPokemonSimpleDetails(id: number): Promise<PokemonSimpleDetails> {
   const [pokemonRes, speciesRes] = await Promise.all([
@@ -210,14 +200,15 @@ export async function getPokemonSimpleDetails(id: number): Promise<PokemonSimple
   };
 }
 
-// Tipos de salida reexportados desde src/types
-
 /**
- * Obtiene detalles completos de un Pokémon por `id`.
- * Incluye las estadísticas base, habilidades y altura además de los detalles simples.
- * @param id ID global del Pokémon.
- * @returns objeto con detalles completos.
- * @throws Error si alguna llamada HTTP no es satisfactoria.
+ * Obtiene detalles completos de un Pokémon.
+ *
+ * Extiende los detalles simples con: `height`, `abilities` (intentando traducir a ES si es posible)
+ * y `stats` desglosadas (`hp`, `attack`, `defense`, `specialAttack`, `specialDefense`, `speed`).
+ *
+ * @param id `id` global del Pokémon
+ * @returns detalles completos aptos para vistas de detalle
+ * @throws Error si alguna respuesta HTTP no es satisfactoria
  */
 export async function getPokemonFullDetails(id: number): Promise<PokemonFullDetails> {
   const [pokemonRes, speciesRes] = await Promise.all([
@@ -276,11 +267,11 @@ export async function getPokemonFullDetails(id: number): Promise<PokemonFullDeta
 }
 
 /**
- * Lista Pokémon paginados usando el endpoint /pokemon con limit/offset y
- * devuelve los detalles simples de cada uno.
- * @param page Número de página (1-based).
- * @param pageSize Tamaño de página. Por defecto 15.
- * @returns items con detalles simples y total de elementos disponibles.
+ * Lista Pokémon con paginación global (`/pokemon?limit&offset`) y devuelve sus detalles simples.
+ * @param page número de página (base 1)
+ * @param pageSize tamaño de página (por defecto, 15)
+ * @returns `{ items, total }` donde `items` son detalles simples y `total` el conteo global
+ * @throws Error si la respuesta de listado no es satisfactoria
  */
 export async function getPokemonPage(
   page: number,
@@ -312,10 +303,14 @@ export async function getPokemonPage(
   return { items, total: listData.count };
 }
 
-// --- Paginación limitada al Pokédex de Sinnoh (extendido id 6) ---
-
+/** Caché en memoria para los IDs globales del Pokédex de Sinnoh (extendido). */
 let cachedSinnohIdsPromise: Promise<number[]> | undefined;
 
+/**
+ * Devuelve y cachea los IDs globales que forman el Pokédex de Sinnoh (extendido).
+ * @returns array de `id` globales ordenados ascendentemente
+ * @throws Error si la respuesta de `/pokedex/{id}` no es satisfactoria
+ */
 export async function getSinnohGlobalIds(): Promise<number[]> {
   if (!cachedSinnohIdsPromise) {
     cachedSinnohIdsPromise = (async () => {
@@ -338,7 +333,10 @@ export async function getSinnohGlobalIds(): Promise<number[]> {
 }
 
 /**
- * Pagina exclusivamente sobre los Pokémon del Pokédex de Sinnoh (extendido).
+ * Pagina exclusivamente sobre los Pokémon presentes en el Pokédex de Sinnoh (extendido).
+ * @param page número de página (base 1)
+ * @param pageSize tamaño de página (por defecto, 15)
+ * @returns `{ items, total }` donde `items` son detalles simples y `total` el número de Pokémon en Sinnoh
  */
 export async function getSinnohPokemonPage(
   page: number,
@@ -360,8 +358,10 @@ export async function getPokemonData(ids: number[]): Promise<PokemonSimpleDetail
 }
 
 /**
- * Devuelve la lista de nombres de tipos que existen en el Pokédex de Sinnoh.
- * Optimiza llamadas usando el endpoint de tipos e intersección con los IDs de Sinnoh.
+ * Lista los nombres de tipos que existen en el conjunto de Pokémon de Sinnoh (extendido).
+ * Cruza el endpoint de tipos con el conjunto de IDs de Sinnoh para filtrar únicamente tipos presentes.
+ * @returns nombres de tipos ordenados alfabéticamente
+ * @throws Error si la respuesta del listado de tipos no es satisfactoria
  */
 export async function getSinnohTypeNames(): Promise<string[]> {
   const sinnohIds = await getSinnohGlobalIds();
@@ -395,7 +395,10 @@ export async function getSinnohTypeNames(): Promise<string[]> {
 }
 
 /**
- * Devuelve los IDs globales de Pokémon de Sinnoh que pertenecen al tipo indicado.
+ * Devuelve los `id` globales de Pokémon de Sinnoh que pertenecen al tipo indicado.
+ * @param typeName nombre del tipo en minúsculas (p. ej., `fire`)
+ * @returns array de `id` globales ordenados ascendentemente
+ * @throws Error si la respuesta de `/type/{typeName}` no es satisfactoria
  */
 export async function getSinnohIdsByType(typeName: string): Promise<number[]> {
   const sinnohIds = await getSinnohGlobalIds();

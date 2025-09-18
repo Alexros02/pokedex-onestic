@@ -2,6 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { getTypeColor } from '../services/pokedex-service';
 
+/**
+ * Filtro por tipo: despliega opciones y aplica selección con estilos por color.
+ * Acepta lista de tipos, valor seleccionado y callback de cambio.
+ */
 interface TypeFilterProps {
   types: string[];
   value: string;

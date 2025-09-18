@@ -1,17 +1,26 @@
 import { getPokemonArtworkUrl, translateTypeToEs } from '../services/pokedex-service';
 import type { PokemonFullDetails } from '../types';
 import { generateAccentColors } from '../utils/color-utils';
+import { capitalizeFirst } from '../utils/string-utils';
 import FavButton from './fav-button';
 
 type DetailCardProps = {
   pokemon: PokemonFullDetails;
 };
 
+/**
+ * Componente de tarjeta de detalle de un Pokémon.
+ * Muestra imagen, tipos, medidas, habilidades y estadísticas del Pokémon,
+ * aplicando acentos de color derivados de su color de tipo.
+ *
+ * Props:
+ * - pokemon: Detalle completo del Pokémon a renderizar.
+ */
 const DetailCard = ({ pokemon }: DetailCardProps) => {
   const accentColors = generateAccentColors(pokemon.typeColor);
   const p = {
     id: pokemon.id,
-    name: pokemon.name,
+    name: capitalizeFirst(pokemon.name),
     types: pokemon.types,
     weightKg: (pokemon.weight / 10).toFixed(1) + ' kg',
     heightM: (pokemon.height / 10).toFixed(1) + ' m',
@@ -31,6 +40,7 @@ const DetailCard = ({ pokemon }: DetailCardProps) => {
       {/* halos decorativos */}
       <div
         className="pointer-events-none absolute -top-24 -left-16 h-56 w-56 rounded-full blur-3xl"
+        aria-hidden="true"
         style={{
           backgroundImage:
             accentColors.accentHaloStrong && accentColors.accentHaloSoft
@@ -40,6 +50,7 @@ const DetailCard = ({ pokemon }: DetailCardProps) => {
       ></div>
       <div
         className="pointer-events-none absolute -bottom-28 -right-10 h-72 w-72 rounded-full blur-3xl"
+        aria-hidden="true"
         style={{
           backgroundImage:
             accentColors.accentHaloAltStrong && accentColors.accentHaloAltSoft

@@ -4,6 +4,10 @@ import { useTheme } from '../contexts/ThemeContext';
 import lightBackground from '../assets/fondo-light.png';
 import darkBackground from '../assets/fondo-dark.png';
 
+/**
+ * Distribución principal de la app.
+ * Aplica fondo y superposición según el tema y renderiza cabecera + páginas.
+ */
 const MainLayout = () => {
   const { isDarkMode } = useTheme();
 
@@ -27,9 +31,8 @@ const MainLayout = () => {
         <Header />
       </div>
       <main className="relative z-10 flex-1 min-h-0 overflow-y-auto dark:text-white pt-12 sm:pt-16 lg:pt-20">
-        <Outlet /> {/* Renderiza las páginas */}
+        <Outlet />
       </main>
-      {/*<footer/>*/}
     </div>
   );
 };
